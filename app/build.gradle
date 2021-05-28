@@ -63,6 +63,9 @@ dependencies {
     // Navigation
     implementation 'androidx.navigation:navigation-compose:2.4.0-alpha01'
 
+    // Image processing
+    implementation "com.google.accompanist:accompanist-coil:0.9.0"
+
     // UI Tests
     androidTestImplementation 'androidx.compose.ui:ui-test-junit4:1.0.0-beta07'
 }
