@@ -3,6 +3,7 @@ package com.antsfamily.rickandmortydata.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
@@ -16,8 +17,19 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.antsfamily.rickandmortydata.R
+import com.antsfamily.rickandmortydata.presentation.MainViewModel
+import com.antsfamily.rickandmortydata.presentation.ViewModelFactory
+import com.antsfamily.rickandmortydata.presentation.withFactory
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val viewModel: MainViewModel by viewModels { withFactory(viewModelFactory) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
