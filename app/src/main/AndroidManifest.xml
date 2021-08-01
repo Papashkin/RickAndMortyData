@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/RickAndMortyData">
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".ui.main.MainActivity"
             android:theme="@style/RickAndMortyData">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
