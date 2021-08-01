@@ -24,10 +24,6 @@ class MainViewModel @Inject constructor(
         getCharacters()
     }
 
-    fun onItemClick(itemId: Int) {
-        //TODO implement navigation later
-    }
-
     private fun getCharacters() {
         getCharactersUseCase.invoke(GetCharactersUseCase.Params(CHARACTER_FIRST_PAGE)) { response ->
             _characters.postValue(response.results.map { it.mapToItem() })
