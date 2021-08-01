@@ -27,5 +27,5 @@ object Elevation {
 }
 
 object ImageSize {
-    val large = 100.dp
+    val large = 128.dp
 }

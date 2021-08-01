@@ -1,6 +1,5 @@
 package com.antsfamily.rickandmortydata.data
 
-import com.google.gson.annotations.JsonAdapter
 import com.google.gson.annotations.SerializedName
 
 data class CharacterDTO(
