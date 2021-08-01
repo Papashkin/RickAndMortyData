@@ -5,10 +5,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Colors
@@ -17,11 +18,12 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import com.antsfamily.rickandmortydata.R
-import com.antsfamily.rickandmortydata.data.Character
+import com.antsfamily.rickandmortydata.data.local.CharacterMainItem
 import com.antsfamily.rickandmortydata.presentation.MainViewModel
 import com.antsfamily.rickandmortydata.presentation.ViewModelFactory
 import com.antsfamily.rickandmortydata.presentation.withFactory
@@ -42,7 +44,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val characters: List<Character> by viewModel.characters.observeAsState(emptyList())
+            val characters: List<CharacterMainItem> by viewModel.characters.observeAsState(emptyList())
             val isLoadingVisible: Boolean by viewModel.isLoadingVisible.observeAsState(true)
             Scaffold {
                 MaterialTheme(colors = getThemeColors()) {
@@ -75,26 +77,29 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun SetLoading(isVisible: Boolean) {
         if (isVisible) {
-            CircularProgressIndicator(
-                Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-            )
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                CircularProgressIndicator()
+            }
         }
     }
 
     @Composable
-    fun ShowCharacters(items: List<Character>) {
+    fun ShowCharacters(items: List<CharacterMainItem>) {
         val scrollState = rememberLazyListState()
         LazyColumn(
             contentPadding = PaddingValues(Padding.medium),
             verticalArrangement = Arrangement.spacedBy(Padding.regular),
             state = scrollState
         ) {
-            items(
-                items = items,
-                itemContent = { CharacterCard(item = it) }
-            )
+            itemsIndexed(items) { _, data ->
+                CharacterCard(
+                    item = data,
+                    modifier = Modifier.clickable { viewModel.onItemClick(data.id) }
+                )
+            }
         }
     }
 }
