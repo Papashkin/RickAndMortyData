@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberImagePainter
 import coil.transform.RoundedCornersTransformation
 import com.antsfamily.rickandmortydata.R
@@ -25,7 +26,7 @@ import com.antsfamily.rickandmortydata.ui.*
 
 @Composable
 fun MainScreen(
-    viewModel: MainViewModel,
+    viewModel: MainViewModel = hiltViewModel(),
     onItemClick: (Int) -> Unit
 ) {
     val characters: List<CharacterMainItem> by viewModel.characters.observeAsState(emptyList())
@@ -71,23 +72,6 @@ fun SetLoading(isVisible: Boolean) {
         }
     }
 }
-
-//@Composable
-//fun ShowCharacters(items: List<CharacterMainItem>, onItemClick: (Int) -> Unit) {
-//    val scrollState = rememberLazyListState()
-//    LazyColumn(
-//        contentPadding = PaddingValues(Padding.medium),
-//        verticalArrangement = Arrangement.spacedBy(Padding.regular),
-//        state = scrollState
-//    ) {
-//        itemsIndexed(items) { _, data ->
-//            CharacterCard(
-//                item = data,
-//                modifier = Modifier.clickable { onItemClick.invoke(data.id) }
-//            )
-//        }
-//    }
-//}
 
 @Composable
 fun ShowCharacters(items: List<CharacterMainItem>, onItemClick: (Int) -> Unit) {
