@@ -6,8 +6,10 @@ import androidx.lifecycle.ViewModel
 import com.antsfamily.rickandmortydata.data.Character
 import com.antsfamily.rickandmortydata.data.local.CharacterMainItem
 import com.antsfamily.rickandmortydata.domain.useCase.GetCharactersUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
+@HiltViewModel
 class MainViewModel @Inject constructor(
     private val getCharactersUseCase: GetCharactersUseCase
 ) : ViewModel() {
