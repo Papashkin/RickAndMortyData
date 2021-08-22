@@ -1,17 +1,11 @@
-package com.antsfamily.rickandmortydata.data
+package com.antsfamily.rickandmortydata.data.remote
 
 import com.google.gson.annotations.SerializedName
 
-data class CharacterDTO(
+data class Characters(
     val info: Info,
-    val results: List<Character>,
-)
-
-data class Info(
-    val count: Int,
-    val pages: Int,
-    val next: String? = null,
-    val prev: String? = null,
+    @SerializedName("results")
+    val characters: List<Character>,
 )
 
 data class Character(

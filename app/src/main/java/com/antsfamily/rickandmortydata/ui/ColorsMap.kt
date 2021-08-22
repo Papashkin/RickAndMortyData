@@ -4,27 +4,31 @@ import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.ui.graphics.Color
 
-val White = Color(0xffffffff)
-val Black = Color(0xff000000)
-val Purple200 = Color(0xFFBB86FC)
-val Purple700 = Color(0xFF3700B3)
-val Teal200 = Color(0xFF03DAC5)
-val Teal700 = Color(0xFF018786)
+val Main = Color(0xFF11B0C8)
+val White = Color(0xFFFFFFFF)
+val Black = Color(0xFF000000)
+val Grey = Color(0xFFD6D6D6)
+val LightCyan = Color(0xFFF0F9FA)
+val DarkCyan = Color(0xFF2F3738)
 
 val LightColors = lightColors(
     primary = Black,
-    secondary = Teal200,
-    primaryVariant = Teal700,
-    onPrimary = White,
-    background = White,
-    surface = White
+    onPrimary = LightCyan,
+    secondary = Main,
+    onSecondary = Grey,
+    background = LightCyan,
+    onBackground = Black,
+    surface = White,
+    onSurface = Black
 )
 
 val DarkColors = darkColors(
     primary = White,
-    secondary = Purple200,
-    primaryVariant = Purple700,
-    onPrimary = Black,
-    background = Black,
-    surface = Black
+    onPrimary = DarkCyan,
+    secondary = Main,
+    onSecondary = Grey,
+    background = DarkCyan,
+    onBackground = White,
+    surface = Grey,
+    onSurface = Black
 )

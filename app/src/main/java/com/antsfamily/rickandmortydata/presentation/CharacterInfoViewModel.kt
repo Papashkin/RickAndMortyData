@@ -3,7 +3,7 @@ package com.antsfamily.rickandmortydata.presentation
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.antsfamily.rickandmortydata.data.Character
+import com.antsfamily.rickandmortydata.data.remote.Character
 import com.antsfamily.rickandmortydata.domain.useCase.GetCharacterInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
