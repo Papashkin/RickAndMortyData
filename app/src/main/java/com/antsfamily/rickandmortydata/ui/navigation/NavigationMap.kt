@@ -15,7 +15,11 @@ fun SetupNavigation() {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = "splash") {
         composable("splash") {
-            SplashScreen { navController.navigate("main") }
+            SplashScreen {
+                navController.navigate("main") {
+                    popUpTo("splash") { inclusive = true }
+                }
+            }
         }
         composable("main") {
             MainScreen { id -> navController.navigate("character/$id") }
