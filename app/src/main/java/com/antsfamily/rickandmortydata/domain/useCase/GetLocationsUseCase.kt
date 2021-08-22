@@ -1,13 +1,13 @@
 package com.antsfamily.rickandmortydata.domain.useCase
 
-import com.antsfamily.rickandmortydata.data.remote.Characters
+import com.antsfamily.rickandmortydata.data.remote.Locations
 import com.antsfamily.rickandmortydata.domain.BaseUseCase
 import com.antsfamily.rickandmortydata.remote.RickMortyService
 import javax.inject.Inject
 
-class GetCharactersUseCase @Inject constructor(
+class GetLocationsUseCase @Inject constructor(
     private val service: RickMortyService
-) : BaseUseCase<Int, Characters>() {
+) : BaseUseCase<Int, Locations>() {
 
-    override suspend fun run(params: Int): Characters = service.getCharacters(params)
+    override suspend fun run(params: Int): Locations = service.getLocations(params)
 }

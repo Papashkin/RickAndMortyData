@@ -18,8 +18,19 @@ import com.antsfamily.rickandmortydata.R
 import com.antsfamily.rickandmortydata.ui.Padding
 import kotlinx.coroutines.delay
 
+interface SplashScreen {
+    companion object {
+        const val ROUTE = "splash"
+
+        @Composable
+        fun Content(onComplete: () -> Unit) {
+            SplashView(onComplete)
+        }
+    }
+}
+
 @Composable
-fun SplashScreen(onComplete: () -> Unit) {
+fun SplashView(onComplete: () -> Unit) {
     val scale = remember { Animatable(0f) }
     LaunchedEffect(key1 = true) {
         scale.animateTo(

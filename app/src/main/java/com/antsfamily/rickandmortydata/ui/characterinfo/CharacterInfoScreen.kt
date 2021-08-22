@@ -18,27 +18,29 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberImagePainter
 import coil.size.Scale
 import com.antsfamily.rickandmortydata.R
-import com.antsfamily.rickandmortydata.data.Character
+import com.antsfamily.rickandmortydata.data.remote.Character
 import com.antsfamily.rickandmortydata.presentation.CharacterInfoViewModel
 import com.antsfamily.rickandmortydata.ui.Padding
 import com.antsfamily.rickandmortydata.ui.Rounding
-import com.antsfamily.rickandmortydata.ui.main.getThemeColors
+import com.antsfamily.rickandmortydata.ui.home.getThemeColors
+
+interface CharacterInfoScreen {
+    companion object {
+        const val ROUTE = "character/{id}"
+
+        @Composable
+        fun Content(viewModel: CharacterInfoViewModel = hiltViewModel(), id: Int) {
+            CharacterInfoView(viewModel, id)
+        }
+    }
+}
 
 @Composable
-fun CharacterInfoScreen(
-    viewModel: CharacterInfoViewModel = hiltViewModel(),
-    id: Int
-) {
+fun CharacterInfoView(viewModel: CharacterInfoViewModel, id: Int) {
     val character: Character? by viewModel.character.observeAsState()
-
     viewModel.getCharacter(id)
-
-    MaterialTheme(colors = getThemeColors()) {
-        Scaffold {
-            character?.let {
-                SetCharacterView(it)
-            }
-        }
+    character?.let {
+        SetCharacterView(it)
     }
 }
 
@@ -83,6 +85,7 @@ fun SetCharacterView(character: Character) {
                     end.linkTo(parent.end)
                 },
             shape = RoundedCornerShape(topStart = Rounding.large, topEnd = Rounding.large),
+//            backgroundColor = getThemeColors().secondary
         ) {
             Column(
                 modifier = Modifier
@@ -103,7 +106,6 @@ fun SetCharacterView(character: Character) {
                         painter = painterResource(id = R.drawable.ic_race),
                         modifier = Modifier.size(50.dp),
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(getThemeColors().primary)
                     )
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
@@ -121,7 +123,6 @@ fun SetCharacterView(character: Character) {
                         painter = painterResource(id = R.drawable.ic_planet),
                         modifier = Modifier.size(50.dp),
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(getThemeColors().primary)
                     )
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
