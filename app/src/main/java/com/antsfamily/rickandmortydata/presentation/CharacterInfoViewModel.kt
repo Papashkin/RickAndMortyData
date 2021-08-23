@@ -15,8 +15,14 @@ class CharacterInfoViewModel @Inject constructor(
     )
 
     fun getCharacter(id: Int) {
-        getCharacterInfoUseCase.invoke(id) { character ->
-            changeState { it.copy(character = character) }
-        }
+        getCharacterInfoUseCase(
+            params = id,
+            onResult = {
+                changeState { state -> state.copy(character = it) }
+            },
+            onError = {
+                // no-op
+            }
+        )
     }
 }

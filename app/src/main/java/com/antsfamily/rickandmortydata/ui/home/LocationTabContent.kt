@@ -17,25 +17,41 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.antsfamily.rickandmortydata.R
 import com.antsfamily.rickandmortydata.data.remote.Location
 import com.antsfamily.rickandmortydata.extensions.mapDistinct
-import com.antsfamily.rickandmortydata.presentation.HomeViewModel
+import com.antsfamily.rickandmortydata.presentation.LocationsTabViewModel
 import com.antsfamily.rickandmortydata.ui.ImageSize
 import com.antsfamily.rickandmortydata.ui.Padding
 import com.antsfamily.rickandmortydata.ui.Rounding
+import com.antsfamily.rickandmortydata.ui.common.ErrorView
 import com.antsfamily.rickandmortydata.ui.common.LoadingView
 
 @Composable
-fun LocationTabContent(viewModel: HomeViewModel, onItemClick: ((Int) -> Unit)? = null) {
-
+fun LocationTabContent(
+    viewModel: LocationsTabViewModel = hiltViewModel(),
+    onItemClick: ((Int) -> Unit)? = null
+) {
     val locations: List<Location> by viewModel.state.mapDistinct { it.locations }
         .observeAsState(emptyList())
-    val isLoading: Boolean by viewModel.state.mapDistinct { it.isLocationsLoading }
+    val isLocationsVisible: Boolean by viewModel.state.mapDistinct { it.isLocationsVisible }
         .observeAsState(false)
+    val isErrorVisible: Boolean by viewModel.state.mapDistinct { it.isLocationsErrorVisible }
+        .observeAsState(false)
+    val isLoading: Boolean by viewModel.state.mapDistinct { it.isLocationsLoading }
+        .observeAsState(true)
 
+    viewModel.showLocations()
+
+    if (isLoading) LoadingView()
+    if (isLocationsVisible) LocationsListView(locations, onItemClick)
+    if (isErrorVisible) ErrorView()
+}
+
+@Composable
+fun LocationsListView(locations: List<Location>, onItemClick: ((Int) -> Unit)? = null) {
     val scrollState = rememberLazyListState()
-    LoadingView(isLoading)
     LazyColumn(
         contentPadding = PaddingValues(Padding.medium),
         verticalArrangement = Arrangement.spacedBy(Padding.regular),

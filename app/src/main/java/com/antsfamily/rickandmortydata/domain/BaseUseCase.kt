@@ -1,9 +1,7 @@
 package com.antsfamily.rickandmortydata.domain
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import java.lang.Exception
 
 abstract class BaseUseCase<in Params, out Type> where Type : Any {
 
@@ -12,8 +10,19 @@ abstract class BaseUseCase<in Params, out Type> where Type : Any {
 
     abstract suspend fun run(params: Params): Type
 
-    operator fun invoke(params: Params, onResult: (Type) -> Unit = {}) {
+    operator fun invoke(
+        params: Params,
+        onResult: (Type) -> Unit = {},
+        onError: (Exception) -> Unit = {}
+    ) {
         val job = CoroutineScope(backgroundDispatcher).async { run(params) }
-        CoroutineScope(mainDispatcher).launch { onResult(job.await()) }
+        CoroutineScope(mainDispatcher).launch {
+            try {
+                val result = job.await()
+                onResult(result)
+            } catch (e: Exception) {
+                onError(e)
+            }
+        }
     }
 }

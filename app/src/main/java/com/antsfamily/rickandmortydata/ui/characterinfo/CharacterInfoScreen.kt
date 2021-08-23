@@ -3,13 +3,15 @@ package com.antsfamily.rickandmortydata.ui.characterinfo
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Card
+import androidx.compose.material.Divider
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -23,7 +25,6 @@ import com.antsfamily.rickandmortydata.extensions.mapDistinct
 import com.antsfamily.rickandmortydata.presentation.CharacterInfoViewModel
 import com.antsfamily.rickandmortydata.ui.Padding
 import com.antsfamily.rickandmortydata.ui.Rounding
-import com.antsfamily.rickandmortydata.ui.home.getThemeColors
 
 interface CharacterInfoScreen {
     companion object {
@@ -144,7 +145,6 @@ fun SetCharacterView(character: Character) {
                         top.linkTo(card.top, margin = Padding.regular)
                         end.linkTo(card.end, margin = Padding.regular)
                     },
-                colorFilter = ColorFilter.tint(getThemeColors().primary)
             )
         }
 
@@ -157,7 +157,6 @@ fun SetCharacterView(character: Character) {
                         top.linkTo(card.top, margin = Padding.regular)
                         end.linkTo(card.end, margin = Padding.regular)
                     },
-                colorFilter = ColorFilter.tint(getThemeColors().primary)
             )
         }
     }

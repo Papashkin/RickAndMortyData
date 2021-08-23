@@ -19,25 +19,42 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberImagePainter
 import com.antsfamily.rickandmortydata.data.local.CharacterMainItem
 import com.antsfamily.rickandmortydata.extensions.mapDistinct
-import com.antsfamily.rickandmortydata.presentation.HomeViewModel
+import com.antsfamily.rickandmortydata.presentation.CharactersTabViewModel
 import com.antsfamily.rickandmortydata.ui.ImageSize
 import com.antsfamily.rickandmortydata.ui.Padding
 import com.antsfamily.rickandmortydata.ui.Rounding
+import com.antsfamily.rickandmortydata.ui.common.ErrorView
 import com.antsfamily.rickandmortydata.ui.common.LoadingView
 
 @Composable
-fun CharacterTabContent(viewModel: HomeViewModel, onItemClick: ((Int) -> Unit)? = null) {
+fun CharacterTabContent(
+    viewModel: CharactersTabViewModel = hiltViewModel(),
+    onItemClick: ((Int) -> Unit)? = null
+) {
 
     val characters: List<CharacterMainItem> by viewModel.state.mapDistinct { it.characters }
         .observeAsState(emptyList())
-    val isLoading: Boolean by viewModel.state.mapDistinct { it.isCharactersLoading }
+    val isCharactersVisible: Boolean by viewModel.state.mapDistinct { it.isCharactersVisible }
         .observeAsState(false)
+    val isCharactersErrorVisible: Boolean by viewModel.state.mapDistinct { it.isCharactersErrorVisible }
+        .observeAsState(false)
+    val isLoading: Boolean by viewModel.state.mapDistinct { it.isCharactersLoading }
+        .observeAsState(true)
 
+    viewModel.showCharacters()
+
+    if (isLoading) LoadingView()
+    if (isCharactersVisible) CharactersListView(characters, onItemClick)
+    if (isCharactersErrorVisible) ErrorView()
+}
+
+@Composable
+fun CharactersListView(characters: List<CharacterMainItem>, onItemClick: ((Int) -> Unit)? = null) {
     val scrollState = rememberLazyListState()
-    LoadingView(isLoading)
     LazyColumn(
         contentPadding = PaddingValues(Padding.medium),
         verticalArrangement = Arrangement.spacedBy(Padding.regular),
