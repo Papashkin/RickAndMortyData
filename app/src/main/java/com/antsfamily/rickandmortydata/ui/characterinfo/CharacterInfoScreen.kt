@@ -19,6 +19,7 @@ import coil.compose.rememberImagePainter
 import coil.size.Scale
 import com.antsfamily.rickandmortydata.R
 import com.antsfamily.rickandmortydata.data.remote.Character
+import com.antsfamily.rickandmortydata.extensions.mapDistinct
 import com.antsfamily.rickandmortydata.presentation.CharacterInfoViewModel
 import com.antsfamily.rickandmortydata.ui.Padding
 import com.antsfamily.rickandmortydata.ui.Rounding
@@ -37,7 +38,7 @@ interface CharacterInfoScreen {
 
 @Composable
 fun CharacterInfoView(viewModel: CharacterInfoViewModel, id: Int) {
-    val character: Character? by viewModel.character.observeAsState()
+    val character: Character? by viewModel.state.mapDistinct { it.character }.observeAsState()
     viewModel.getCharacter(id)
     character?.let {
         SetCharacterView(it)
@@ -85,7 +86,6 @@ fun SetCharacterView(character: Character) {
                     end.linkTo(parent.end)
                 },
             shape = RoundedCornerShape(topStart = Rounding.large, topEnd = Rounding.large),
-//            backgroundColor = getThemeColors().secondary
         ) {
             Column(
                 modifier = Modifier

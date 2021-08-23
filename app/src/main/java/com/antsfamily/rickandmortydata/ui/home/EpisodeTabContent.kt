@@ -19,8 +19,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import com.antsfamily.rickandmortydata.R
 import com.antsfamily.rickandmortydata.data.remote.Episode
+import com.antsfamily.rickandmortydata.extensions.mapDistinct
 import com.antsfamily.rickandmortydata.presentation.HomeViewModel
-import com.antsfamily.rickandmortydata.ui.Elevation
 import com.antsfamily.rickandmortydata.ui.ImageSize
 import com.antsfamily.rickandmortydata.ui.Padding
 import com.antsfamily.rickandmortydata.ui.Rounding
@@ -28,8 +28,11 @@ import com.antsfamily.rickandmortydata.ui.common.LoadingView
 
 @Composable
 fun EpisodeTabContent(viewModel: HomeViewModel, onItemClick: ((Int) -> Unit)? = null) {
-    val episodes: List<Episode> by viewModel.episodes.observeAsState(emptyList())
-    val isLoading: Boolean by viewModel.isEpisodesLoadingVisible.observeAsState(false)
+
+    val episodes: List<Episode> by viewModel.state.mapDistinct { it.episodes }
+        .observeAsState(emptyList())
+    val isLoading: Boolean by viewModel.state.mapDistinct { it.isEpisodesLoading }
+        .observeAsState(false)
 
     val scrollState = rememberLazyListState()
     LoadingView(isLoading)
@@ -49,7 +52,6 @@ fun EpisodeCard(item: Episode, onItemClick: ((Int) -> Unit)? = null) {
     Card(
         modifier = Modifier.wrapContentHeight(unbounded = true),
         shape = RoundedCornerShape(Rounding.regular),
-        elevation = Elevation.tiny,
     ) {
         Row(
             modifier = Modifier.clickable { onItemClick?.invoke(item.id) },

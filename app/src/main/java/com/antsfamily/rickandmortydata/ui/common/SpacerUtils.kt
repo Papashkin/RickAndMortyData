@@ -10,8 +10,3 @@ import com.antsfamily.rickandmortydata.ui.Padding
 fun SpacerRegular() {
     Spacer(Modifier.height(Padding.regular))
 }
-
-@Composable
-fun SpacerMedium() {
-    Spacer(Modifier.height(Padding.medium))
-}
