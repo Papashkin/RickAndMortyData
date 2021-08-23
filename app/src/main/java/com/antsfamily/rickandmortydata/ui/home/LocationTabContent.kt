@@ -19,18 +19,20 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import com.antsfamily.rickandmortydata.R
 import com.antsfamily.rickandmortydata.data.remote.Location
+import com.antsfamily.rickandmortydata.extensions.mapDistinct
 import com.antsfamily.rickandmortydata.presentation.HomeViewModel
-import com.antsfamily.rickandmortydata.ui.Elevation
 import com.antsfamily.rickandmortydata.ui.ImageSize
 import com.antsfamily.rickandmortydata.ui.Padding
 import com.antsfamily.rickandmortydata.ui.Rounding
 import com.antsfamily.rickandmortydata.ui.common.LoadingView
-import com.antsfamily.rickandmortydata.ui.common.SpacerMedium
 
 @Composable
 fun LocationTabContent(viewModel: HomeViewModel, onItemClick: ((Int) -> Unit)? = null) {
-    val locations: List<Location> by viewModel.locations.observeAsState(emptyList())
-    val isLoading: Boolean by viewModel.isLocationsLoadingVisible.observeAsState(false)
+
+    val locations: List<Location> by viewModel.state.mapDistinct { it.locations }
+        .observeAsState(emptyList())
+    val isLoading: Boolean by viewModel.state.mapDistinct { it.isLocationsLoading }
+        .observeAsState(false)
 
     val scrollState = rememberLazyListState()
     LoadingView(isLoading)
@@ -50,7 +52,6 @@ fun LocationCard(item: Location, onItemClick: ((Int) -> Unit)? = null) {
     Card(
         modifier = Modifier.wrapContentHeight(unbounded = true),
         shape = RoundedCornerShape(Rounding.regular),
-        elevation = Elevation.tiny,
     ) {
         Row(
             modifier = Modifier.clickable { onItemClick?.invoke(item.id) },
@@ -77,9 +78,9 @@ fun LocationCard(item: Location, onItemClick: ((Int) -> Unit)? = null) {
                     text = item.type,
                     style = MaterialTheme.typography.body2
                 )
-                SpacerMedium()
                 Text(
                     text = item.dimension,
+                    modifier = Modifier.padding(top = Padding.medium),
                     style = MaterialTheme.typography.caption
                 )
                 Text(

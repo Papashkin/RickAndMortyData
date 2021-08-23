@@ -21,18 +21,20 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import coil.compose.rememberImagePainter
 import com.antsfamily.rickandmortydata.data.local.CharacterMainItem
+import com.antsfamily.rickandmortydata.extensions.mapDistinct
 import com.antsfamily.rickandmortydata.presentation.HomeViewModel
-import com.antsfamily.rickandmortydata.ui.Elevation
 import com.antsfamily.rickandmortydata.ui.ImageSize
 import com.antsfamily.rickandmortydata.ui.Padding
 import com.antsfamily.rickandmortydata.ui.Rounding
 import com.antsfamily.rickandmortydata.ui.common.LoadingView
-import com.antsfamily.rickandmortydata.ui.common.SpacerMedium
 
 @Composable
 fun CharacterTabContent(viewModel: HomeViewModel, onItemClick: ((Int) -> Unit)? = null) {
-    val characters: List<CharacterMainItem> by viewModel.characters.observeAsState(emptyList())
-    val isLoading: Boolean by viewModel.isCharactersLoadingVisible.observeAsState(false)
+
+    val characters: List<CharacterMainItem> by viewModel.state.mapDistinct { it.characters }
+        .observeAsState(emptyList())
+    val isLoading: Boolean by viewModel.state.mapDistinct { it.isCharactersLoading }
+        .observeAsState(false)
 
     val scrollState = rememberLazyListState()
     LoadingView(isLoading)
@@ -52,7 +54,6 @@ fun CharacterCard(item: CharacterMainItem, onItemClick: ((Int) -> Unit)? = null)
     Card(
         modifier = Modifier.wrapContentHeight(unbounded = true),
         shape = RoundedCornerShape(Rounding.regular),
-        elevation = Elevation.tiny,
     ) {
         Row(
             modifier = Modifier.clickable { onItemClick?.invoke(item.id) },
@@ -78,8 +79,11 @@ fun CharacterCard(item: CharacterMainItem, onItemClick: ((Int) -> Unit)? = null)
                     style = MaterialTheme.typography.h6
                 )
                 Text(text = item.species, style = MaterialTheme.typography.body2)
-                SpacerMedium()
-                Text(text = item.status, style = MaterialTheme.typography.caption)
+                Text(
+                    text = item.status,
+                    modifier = Modifier.padding(top = Padding.medium),
+                    style = MaterialTheme.typography.caption
+                )
             }
         }
     }
