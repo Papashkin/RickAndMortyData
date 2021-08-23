@@ -66,44 +66,53 @@ fun LocationsListView(locations: List<Location>, onItemClick: ((Int) -> Unit)? =
 @Composable
 fun LocationCard(item: Location, onItemClick: ((Int) -> Unit)? = null) {
     Card(
-        modifier = Modifier.wrapContentHeight(unbounded = true),
+        modifier = Modifier.wrapContentHeight(unbounded = true).fillMaxWidth(),
         shape = RoundedCornerShape(Rounding.regular),
     ) {
-        Row(
+        Column(
             modifier = Modifier.clickable { onItemClick?.invoke(item.id) },
-            verticalAlignment = Alignment.CenterVertically
+            verticalArrangement = Arrangement.Center
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_planet),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(ImageSize.large)
-                    .padding(Padding.medium)
-            )
-            Column(
-                modifier = Modifier
-                    .padding(horizontal = Padding.medium, vertical = Padding.small)
-                    .fillMaxWidth()
+            Row(
+                modifier = Modifier.padding(horizontal = Padding.medium, vertical = Padding.regular),
+                verticalAlignment = Alignment.CenterVertically
             ) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_planet),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(ImageSize.regular)
+                        .padding(end = Padding.small)
+                )
                 Text(
                     text = item.name,
                     fontWeight = FontWeight.Bold,
                     style = MaterialTheme.typography.h6
                 )
-                Text(
-                    text = item.type,
-                    style = MaterialTheme.typography.body2
-                )
-                Text(
-                    text = item.dimension,
-                    modifier = Modifier.padding(top = Padding.medium),
-                    style = MaterialTheme.typography.caption
-                )
-                Text(
-                    text = "Residents: ${item.residents.size}",
-                    style = MaterialTheme.typography.caption
-                )
             }
+            Text(
+                modifier = Modifier.padding(vertical = Padding.tiny, horizontal = Padding.medium),
+                text = item.type,
+                style = MaterialTheme.typography.body2
+            )
+            Text(
+                text = item.dimension,
+                modifier = Modifier.padding(
+                    start = Padding.medium,
+                    end = Padding.medium,
+                    top = Padding.medium
+                ),
+                style = MaterialTheme.typography.caption
+            )
+            Text(
+                modifier = Modifier.padding(
+                    start = Padding.medium,
+                    end = Padding.medium,
+                    bottom = Padding.medium
+                ),
+                text = "Residents: ${item.residents.size}",
+                style = MaterialTheme.typography.caption
+            )
         }
     }
 }

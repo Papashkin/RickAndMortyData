@@ -1,6 +1,5 @@
 package com.antsfamily.rickandmortydata.ui.home
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -8,14 +7,16 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Videocam
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.antsfamily.rickandmortydata.R
@@ -74,12 +75,13 @@ fun EpisodeCard(item: Episode, onItemClick: ((Int) -> Unit)? = null) {
             modifier = Modifier.clickable { onItemClick?.invoke(item.id) },
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_movie),
+            Icon(
+                Icons.Outlined.Videocam,
+                tint = getThemeColors().onSurface,
                 contentDescription = null,
                 modifier = Modifier
-                    .size(ImageSize.large)
-                    .padding(Padding.medium)
+                    .size(ImageSize.medium)
+                    .padding(Padding.regular)
             )
             Column(
                 modifier = Modifier
@@ -87,10 +89,14 @@ fun EpisodeCard(item: Episode, onItemClick: ((Int) -> Unit)? = null) {
                     .fillMaxWidth()
             ) {
                 Text(
-                    text = "${item.name} (${item.episode})",
-                    maxLines = 3,
+                    text = item.name,
+                    maxLines = 2,
                     fontWeight = FontWeight.Bold,
                     style = MaterialTheme.typography.h6
+                )
+                Text(
+                    text = "(${item.episode})",
+                    style = MaterialTheme.typography.body1
                 )
                 Text(
                     text = "When: ${item.air_date}",

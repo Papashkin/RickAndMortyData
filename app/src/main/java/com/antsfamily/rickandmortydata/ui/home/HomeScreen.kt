@@ -25,8 +25,6 @@ import kotlinx.coroutines.launch
 
 interface HomeScreen {
     companion object {
-        const val ROUTE = "home"
-
         @ExperimentalPagerApi
         @Composable
         fun Content(
