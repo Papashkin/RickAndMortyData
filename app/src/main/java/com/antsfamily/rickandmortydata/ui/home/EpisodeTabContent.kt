@@ -19,7 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.antsfamily.rickandmortydata.R
 import com.antsfamily.rickandmortydata.data.remote.Episode
 import com.antsfamily.rickandmortydata.extensions.mapDistinct
 import com.antsfamily.rickandmortydata.presentation.EpisodesTabViewModel

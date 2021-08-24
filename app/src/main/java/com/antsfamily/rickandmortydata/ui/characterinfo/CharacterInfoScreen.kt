@@ -30,6 +30,7 @@ import com.antsfamily.rickandmortydata.presentation.CharacterInfoViewModel
 import com.antsfamily.rickandmortydata.ui.ImageSize
 import com.antsfamily.rickandmortydata.ui.Padding
 import com.antsfamily.rickandmortydata.ui.Rounding
+import com.antsfamily.rickandmortydata.ui.home.getThemeColors
 
 interface CharacterInfoScreen {
     companion object {
