@@ -29,31 +29,31 @@ interface HomeScreen {
         @Composable
         fun Content(
             onCharacterClick: (Int) -> Unit,
+            onShowMoreCharactersClick: () -> Unit,
             onLocationClick: (Int) -> Unit,
-            onEpisodeClick: (Int) -> Unit
+//            onShowMoreLocationsClick: () -> Unit, //TODO should be implemented later
+            onEpisodeClick: (Int) -> Unit,
+//            onShowMoreEpisodesClick: () -> Unit //TODO should be implemented later
         ) {
-            HomeView(onCharacterClick, onLocationClick, onEpisodeClick)
+            val pages = TabItem.values().toList()
+            val pagerState = rememberPagerState(pageCount = pages.size)
+
+            Column(
+                Modifier.padding(horizontal = Padding.zero, vertical = Padding.regular)
+            ) {
+                SetTitleIcon()
+                SpacerRegular()
+                CharacterTab(pages, pagerState)
+                when (TabItem.values()[pagerState.currentPage]) {
+                    TabItem.CHARACTERS -> CharacterTabContent(
+                        onItemClick = onCharacterClick,
+                        onShowMoreClick = onShowMoreCharactersClick
+                    )
+                    TabItem.LOCATIONS -> LocationTabContent(onItemClick = onLocationClick)
+                    TabItem.EPISODES -> EpisodeTabContent(onItemClick = onEpisodeClick)
+                }
+            }
         }
-    }
-}
-
-@ExperimentalPagerApi
-@Composable
-fun HomeView(
-    onCharacterClick: (Int) -> Unit,
-    onLocationClick: (Int) -> Unit,
-    onEpisodeClick: (Int) -> Unit
-) {
-    val pages = TabItem.values().toList()
-    val pagerState = rememberPagerState(pageCount = pages.size)
-
-    Column(
-        Modifier.padding(horizontal = Padding.zero, vertical = Padding.regular)
-    ) {
-        SetTitleIcon()
-        SpacerRegular()
-        CharacterTab(pages, pagerState)
-        TabContent(pagerState, onCharacterClick, onLocationClick, onEpisodeClick)
     }
 }
 
@@ -93,20 +93,5 @@ fun CharacterTab(pages: List<TabItem>, pagerState: PagerState) {
                 )
             }
         }
-    }
-}
-
-@ExperimentalPagerApi
-@Composable
-fun TabContent(
-    pagerState: PagerState,
-    onCharacterClick: (Int) -> Unit,
-    onLocationClick: (Int) -> Unit,
-    onEpisodeClick: (Int) -> Unit
-) {
-    when (TabItem.values()[pagerState.currentPage]) {
-        TabItem.CHARACTERS -> CharacterTabContent(onItemClick = onCharacterClick)
-        TabItem.LOCATIONS -> LocationTabContent(onItemClick = onLocationClick)
-        TabItem.EPISODES -> EpisodeTabContent(onItemClick = onEpisodeClick)
     }
 }
