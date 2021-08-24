@@ -8,9 +8,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -18,10 +16,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberImagePainter
+import com.antsfamily.rickandmortydata.R
 import com.antsfamily.rickandmortydata.data.local.CharacterMainItem
+import com.antsfamily.rickandmortydata.data.local.ItemType
 import com.antsfamily.rickandmortydata.extensions.mapDistinct
 import com.antsfamily.rickandmortydata.presentation.CharactersTabViewModel
 import com.antsfamily.rickandmortydata.ui.ImageSize
@@ -29,11 +30,13 @@ import com.antsfamily.rickandmortydata.ui.Padding
 import com.antsfamily.rickandmortydata.ui.Rounding
 import com.antsfamily.rickandmortydata.ui.common.ErrorView
 import com.antsfamily.rickandmortydata.ui.common.LoadingView
+import com.antsfamily.rickandmortydata.ui.common.TextButton
 
 @Composable
 fun CharacterTabContent(
     viewModel: CharactersTabViewModel = hiltViewModel(),
-    onItemClick: ((Int) -> Unit)? = null
+    onItemClick: ((Int) -> Unit) = { },
+    onShowMoreClick: (() -> Unit) = { }
 ) {
 
     val characters: List<CharacterMainItem> by viewModel.state.mapDistinct { it.characters }
@@ -48,12 +51,16 @@ fun CharacterTabContent(
     viewModel.showCharacters()
 
     if (isLoading) LoadingView()
-    if (isCharactersVisible) CharactersListView(characters, onItemClick)
+    if (isCharactersVisible) CharactersListView(characters, onItemClick, onShowMoreClick)
     if (isCharactersErrorVisible) ErrorView()
 }
 
 @Composable
-fun CharactersListView(characters: List<CharacterMainItem>, onItemClick: ((Int) -> Unit)? = null) {
+fun CharactersListView(
+    characters: List<CharacterMainItem>,
+    onItemClick: ((Int) -> Unit),
+    onShowMoreClick: (() -> Unit)
+) {
     val scrollState = rememberLazyListState()
     LazyColumn(
         contentPadding = PaddingValues(Padding.medium),
@@ -61,7 +68,10 @@ fun CharactersListView(characters: List<CharacterMainItem>, onItemClick: ((Int) 
         state = scrollState
     ) {
         itemsIndexed(characters) { _, data ->
-            CharacterCard(item = data, onItemClick = onItemClick)
+            when (data.type) {
+                ItemType.CONTENT -> CharacterCard(item = data, onItemClick = onItemClick)
+                ItemType.SHOW_MORE_VIEW -> TextButton(stringResource(R.string.tab_character_show_more), onShowMoreClick)
+            }
         }
     }
 }

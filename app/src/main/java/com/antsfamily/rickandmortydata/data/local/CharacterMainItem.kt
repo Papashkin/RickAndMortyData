@@ -6,4 +6,5 @@ data class CharacterMainItem(
     val status: String,
     val species: String,
     val image: String,
+    val type: ItemType,
 )

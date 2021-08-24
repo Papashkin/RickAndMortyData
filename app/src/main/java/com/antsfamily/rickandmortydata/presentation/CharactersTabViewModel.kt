@@ -2,6 +2,7 @@ package com.antsfamily.rickandmortydata.presentation
 
 import android.util.Log
 import com.antsfamily.rickandmortydata.data.local.CharacterMainItem
+import com.antsfamily.rickandmortydata.data.local.ItemType
 import com.antsfamily.rickandmortydata.data.remote.Character
 import com.antsfamily.rickandmortydata.data.remote.Characters
 import com.antsfamily.rickandmortydata.domain.useCase.GetCharactersUseCase
@@ -37,7 +38,9 @@ class CharactersTabViewModel @Inject constructor(
     private fun handleCharactersSuccessResult(data: Characters) {
         changeState {
             it.copy(
-                characters = data.characters.mapToItem(),
+                characters = data.characters
+                    .mapToItem()
+                    .plus(CharacterMainItem(-1, "", "", "", "", ItemType.SHOW_MORE_VIEW)),
                 isCharactersVisible = true,
                 isCharactersErrorVisible = false,
                 isCharactersLoading = false,
@@ -58,7 +61,7 @@ class CharactersTabViewModel @Inject constructor(
 
     private fun List<Character>.mapToItem(): List<CharacterMainItem> = this.map { character ->
         with(character) {
-            CharacterMainItem(id, name, status, species, image)
+            CharacterMainItem(id, name, status, species, image, ItemType.CONTENT)
         }
     }
 
