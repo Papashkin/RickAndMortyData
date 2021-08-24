@@ -20,8 +20,6 @@ import kotlinx.coroutines.delay
 
 interface SplashScreen {
     companion object {
-        const val ROUTE = "splash"
-
         @Composable
         fun Content(onComplete: () -> Unit) {
             SplashView(onComplete)

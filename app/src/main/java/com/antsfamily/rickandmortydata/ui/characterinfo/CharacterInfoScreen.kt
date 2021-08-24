@@ -7,6 +7,10 @@ import androidx.compose.material.Card
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Accessibility
+import androidx.compose.material.icons.rounded.PinDrop
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -23,13 +27,13 @@ import com.antsfamily.rickandmortydata.R
 import com.antsfamily.rickandmortydata.data.remote.Character
 import com.antsfamily.rickandmortydata.extensions.mapDistinct
 import com.antsfamily.rickandmortydata.presentation.CharacterInfoViewModel
+import com.antsfamily.rickandmortydata.ui.ImageSize
 import com.antsfamily.rickandmortydata.ui.Padding
 import com.antsfamily.rickandmortydata.ui.Rounding
+import com.antsfamily.rickandmortydata.ui.home.getThemeColors
 
 interface CharacterInfoScreen {
     companion object {
-        const val ROUTE = "character/{id}"
-
         @Composable
         fun Content(viewModel: CharacterInfoViewModel = hiltViewModel(), id: Int) {
             CharacterInfoView(viewModel, id)
@@ -86,7 +90,7 @@ fun SetCharacterView(character: Character) {
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 },
-            shape = RoundedCornerShape(topStart = Rounding.large, topEnd = Rounding.large),
+            shape = RoundedCornerShape(topStart = Rounding.xlarge, topEnd = Rounding.xlarge),
         ) {
             Column(
                 modifier = Modifier
@@ -94,7 +98,7 @@ fun SetCharacterView(character: Character) {
                     .padding(horizontal = Padding.regular)
             ) {
                 Text(
-                    modifier = Modifier.padding(start = Padding.tiny, top = Padding.huge),
+                    modifier = Modifier.padding(start = Padding.small, top = Padding.huge),
                     text = character.name,
                     fontWeight = FontWeight.Bold,
                     style = MaterialTheme.typography.h4,
@@ -103,43 +107,42 @@ fun SetCharacterView(character: Character) {
                     modifier = Modifier.padding(top = Padding.medium),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_race),
-                        modifier = Modifier.size(50.dp),
+                    Icon(
+                        Icons.Rounded.Accessibility,
                         contentDescription = null,
+                        tint = getThemeColors().onSurface,
+                        modifier = Modifier.size(ImageSize.regular)
                     )
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(
-                            modifier = Modifier.padding(start = Padding.regular),
-                            text = character.species,
-                            style = MaterialTheme.typography.body1,
-                        )
-                    }
+                    Text(
+                        modifier = Modifier.padding(start = Padding.regular),
+                        text = character.species,
+                        style = MaterialTheme.typography.body1,
+                    )
                 }
                 Row(
                     modifier = Modifier.padding(top = Padding.medium),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_planet),
-                        modifier = Modifier.size(50.dp),
+                    Icon(
+                        Icons.Rounded.PinDrop,
                         contentDescription = null,
+                        tint = getThemeColors().onSurface,
+                        modifier = Modifier.size(ImageSize.regular)
                     )
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(
-                            modifier = Modifier.padding(start = Padding.regular),
-                            text = character.origin.name,
-                            style = MaterialTheme.typography.body1,
-                        )
-                    }
+                    Text(
+                        modifier = Modifier.padding(start = Padding.regular),
+                        text = character.origin.name,
+                        style = MaterialTheme.typography.body1,
+                    )
                 }
             }
         }
 
         if (character.status == "Dead") {
-            Image(
+            Icon(
                 painter = painterResource(id = R.drawable.ic_dead),
                 contentDescription = null,
+                tint = getThemeColors().onSurface,
                 modifier = Modifier
                     .constrainAs(deadIcon) {
                         top.linkTo(card.top, margin = Padding.regular)
@@ -149,9 +152,10 @@ fun SetCharacterView(character: Character) {
         }
 
         if (character.status == "unknown") {
-            Image(
-                painter = painterResource(id = R.drawable.ic_unknown),
+            Icon(
+                painter = painterResource(id = R.drawable.ic_dead),
                 contentDescription = null,
+                tint = getThemeColors().onSurface,
                 modifier = Modifier
                     .constrainAs(unknownIcon) {
                         top.linkTo(card.top, margin = Padding.regular)

@@ -29,6 +29,6 @@ val DarkColors = darkColors(
     onSecondary = Grey,
     background = DarkCyan,
     onBackground = White,
-    surface = Grey,
-    onSurface = Black
+    surface = Black,
+    onSurface = White
 )

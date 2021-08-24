@@ -15,15 +15,15 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 @Composable
 fun Navigation() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = SplashScreen.ROUTE) {
-        composable(SplashScreen.ROUTE) {
+    NavHost(navController = navController, startDestination = Route.Splash) {
+        composable(Route.Splash) {
             SplashScreen.Content {
-                navController.navigate(HomeScreen.ROUTE) {
-                    popUpTo(SplashScreen.ROUTE) { inclusive = true }
+                navController.navigate(Route.Home) {
+                    popUpTo(Route.Splash) { inclusive = true }
                 }
             }
         }
-        composable(HomeScreen.ROUTE) {
+        composable(Route.Home) {
             HomeScreen.Content(
                 onCharacterClick = { id -> navController.navigate("character/$id") },
                 onLocationClick = {},
@@ -31,10 +31,16 @@ fun Navigation() {
             )
         }
         composable(
-            CharacterInfoScreen.ROUTE,
+            Route.CharacterInfo,
             arguments = listOf(navArgument("id") { type = NavType.IntType })
         ) {
             CharacterInfoScreen.Content(id = it.arguments?.getInt("id") ?: 0)
         }
     }
+}
+
+object Route {
+    const val Splash = "splash"
+    const val Home = "home"
+    const val CharacterInfo = "character/{id}"
 }
