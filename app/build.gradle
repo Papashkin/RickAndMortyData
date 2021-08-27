@@ -63,7 +63,6 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07'
     // Integration with observables
     implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
-    implementation "androidx.compose.runtime:runtime-rxjava2:$compose_version"
     // Navigation
     implementation 'androidx.navigation:navigation-compose:2.4.0-alpha06'
     implementation 'androidx.hilt:hilt-navigation-compose:1.0.0-alpha03'
@@ -84,5 +83,6 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
 
     // UI Tests
-    androidTestImplementation 'androidx.compose.ui:ui-test-junit4:1.0.0'
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
+    debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
 }
