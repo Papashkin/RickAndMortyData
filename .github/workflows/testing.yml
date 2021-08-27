@@ -1,0 +1,20 @@
+name: Testing
+
+on:
+  pull_request:
+    branches: [ develop ]
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: '11'
+      - name: Run tests
+        run: ./gradlew test
