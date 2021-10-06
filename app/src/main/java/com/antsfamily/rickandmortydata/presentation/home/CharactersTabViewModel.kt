@@ -1,12 +1,15 @@
 package com.antsfamily.rickandmortydata.presentation.home
 
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.antsfamily.rickandmortydata.data.DataRepository
 import com.antsfamily.rickandmortydata.domain.entity.Character
 import com.antsfamily.rickandmortydata.domain.entity.Characters
-import com.antsfamily.rickandmortydata.presentation.StatefulViewModel
-import com.antsfamily.rickandmortydata.presentation.home.model.CharacterMainItem
+import com.antsfamily.rickandmortydata.presentation.home.model.CharacterItem
+import com.antsfamily.rickandmortydata.presentation.home.state.CharactersState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -14,19 +17,19 @@ import javax.inject.Inject
 @HiltViewModel
 class CharactersTabViewModel @Inject constructor(
     private val repository: DataRepository,
-) : StatefulViewModel<CharactersTabViewModel.State>(State()) {
+) : ViewModel() {
 
-    data class State(
-        val characters: List<CharacterMainItem> = emptyList(),
-        val isCharactersVisible: Boolean = false,
-        val isCharactersErrorVisible: Boolean = false,
-        val isCharactersLoading: Boolean = true,
-    )
+    private val _state = MutableLiveData<CharactersState>(CharactersState.LoadingState)
+    val state: LiveData<CharactersState>
+        get() = _state
 
-    fun showCharacters() {
-        if (state.value?.characters?.isNullOrEmpty() == true) {
-            getCharacters()
-        }
+    init {
+        getCharacters()
+    }
+
+    fun onRetryClick() {
+        _state.postValue(CharactersState.LoadingState)
+        getCharacters()
     }
 
     private fun getCharacters() = viewModelScope.launch {
@@ -39,30 +42,17 @@ class CharactersTabViewModel @Inject constructor(
     }
 
     private fun handleCharactersSuccessResult(data: Characters) {
-        changeState {
-            it.copy(
-                characters = data.characters.mapToItem(),
-                isCharactersVisible = true,
-                isCharactersErrorVisible = false,
-                isCharactersLoading = false,
-            )
-        }
+        _state.postValue(CharactersState.DataState(data.characters.mapToItems()))
     }
 
     private fun handleCharactersErrorResult(e: Exception) {
         Log.e(TAG, e.message.orEmpty())
-        changeState {
-            it.copy(
-                isCharactersVisible = false,
-                isCharactersErrorVisible = true,
-                isCharactersLoading = false,
-            )
-        }
+        _state.postValue(CharactersState.ErrorState)
     }
 
-    private fun List<Character>.mapToItem(): List<CharacterMainItem> = this.map { character ->
+    private fun List<Character>.mapToItems(): List<CharacterItem> = this.map { character ->
         with(character) {
-            CharacterMainItem(id, name, status, species, image)
+            CharacterItem(id, name, status, species, origin.name, image)
         }
     }
 

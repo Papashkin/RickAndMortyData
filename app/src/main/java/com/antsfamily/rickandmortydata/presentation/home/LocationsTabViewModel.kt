@@ -1,31 +1,35 @@
 package com.antsfamily.rickandmortydata.presentation.home
 
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.antsfamily.rickandmortydata.data.DataRepository
 import com.antsfamily.rickandmortydata.domain.entity.Location
 import com.antsfamily.rickandmortydata.domain.entity.Locations
-import com.antsfamily.rickandmortydata.presentation.StatefulViewModel
+import com.antsfamily.rickandmortydata.presentation.home.model.LocationItem
+import com.antsfamily.rickandmortydata.presentation.home.state.LocationsState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class LocationsTabViewModel @Inject constructor(
-    private val repository: DataRepository,
-) : StatefulViewModel<LocationsTabViewModel.State>(State()) {
+    private val repository: DataRepository
+) : ViewModel() {
 
-    data class State(
-        val locations: List<Location> = emptyList(),
-        val isLocationsVisible: Boolean = false,
-        val isLocationsErrorVisible: Boolean = false,
-        val isLocationsLoading: Boolean = true,
-    )
+    private val _state = MutableLiveData<LocationsState>(LocationsState.LoadingState)
+    val state: LiveData<LocationsState>
+        get() = _state
 
-    fun showLocations() {
-        if (state.value?.locations?.isNullOrEmpty() == true) {
-            getLocations()
-        }
+    init {
+        getLocations()
+    }
+
+    fun onRetryClick() {
+        _state.postValue(LocationsState.LoadingState)
+        getLocations()
     }
 
     private fun getLocations() = viewModelScope.launch {
@@ -38,23 +42,17 @@ class LocationsTabViewModel @Inject constructor(
     }
 
     private fun handleLocationsSuccessResult(data: Locations) {
-        changeState {
-            it.copy(
-                locations = data.locations,
-                isLocationsVisible = true,
-                isLocationsLoading = false,
-            )
-        }
+        _state.postValue(LocationsState.DataState(data.locations.mapToItems()))
     }
 
     private fun handleLocationsErrorResult(e: Exception) {
         Log.e(TAG, e.message.orEmpty())
-        changeState {
-            it.copy(
-                isLocationsErrorVisible = true,
-                isLocationsVisible = false,
-                isLocationsLoading = false
-            )
+        _state.postValue(LocationsState.ErrorState)
+    }
+
+    private fun List<Location>.mapToItems(): List<LocationItem> = this.map { location ->
+        with(location) {
+            LocationItem(id, name, type, dimension, residents, url, created)
         }
     }
 

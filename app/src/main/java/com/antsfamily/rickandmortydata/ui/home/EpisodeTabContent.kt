@@ -13,19 +13,18 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Videocam
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.antsfamily.rickandmortydata.domain.entity.Episode
-import com.antsfamily.rickandmortydata.extensions.mapDistinct
 import com.antsfamily.rickandmortydata.presentation.home.EpisodesTabViewModel
+import com.antsfamily.rickandmortydata.presentation.home.model.EpisodeItem
+import com.antsfamily.rickandmortydata.presentation.home.state.EpisodesState
 import com.antsfamily.rickandmortydata.ui.ImageSize
 import com.antsfamily.rickandmortydata.ui.Padding
 import com.antsfamily.rickandmortydata.ui.Rounding
-import com.antsfamily.rickandmortydata.ui.common.ErrorView
+import com.antsfamily.rickandmortydata.ui.common.ErrorWithRetryView
 import com.antsfamily.rickandmortydata.ui.common.LoadingView
 
 @Composable
@@ -33,25 +32,22 @@ fun EpisodeTabContent(
     viewModel: EpisodesTabViewModel = hiltViewModel(),
     onItemClick: ((Int) -> Unit)? = null
 ) {
-
-    val episodes: List<Episode> by viewModel.state.mapDistinct { it.episodes }
-        .observeAsState(emptyList())
-    val isEpisodesVisible: Boolean by viewModel.state.mapDistinct { it.isEpisodesVisible }
-        .observeAsState(false)
-    val isErrorVisible: Boolean by viewModel.state.mapDistinct { it.isEpisodesErrorVisible }
-        .observeAsState(false)
-    val isLoading: Boolean by viewModel.state.mapDistinct { it.isEpisodesLoading }
-        .observeAsState(true)
-
-    viewModel.showEpisodes()
-
-    if (isLoading) LoadingView()
-    if (isEpisodesVisible) EpisodesListView(episodes, onItemClick)
-    if (isErrorVisible) ErrorView()
+    viewModel.state.observeAsState().value?.let { state ->
+        when (state) {
+            is EpisodesState.DataState -> EpisodesListView(
+                episodes = (state as? EpisodesState.DataState)?.episodes.orEmpty(),
+                onItemClick = onItemClick
+            )
+            EpisodesState.ErrorState -> ErrorWithRetryView(
+                onRetryClick = { viewModel.onRetryClick() }
+            )
+            EpisodesState.LoadingState -> LoadingView()
+        }
+    }
 }
 
 @Composable
-fun EpisodesListView(episodes: List<Episode>, onItemClick: ((Int) -> Unit)? = null) {
+fun EpisodesListView(episodes: List<EpisodeItem>, onItemClick: ((Int) -> Unit)? = null) {
     val scrollState = rememberLazyListState()
     LazyColumn(
         contentPadding = PaddingValues(Padding.medium),
@@ -65,7 +61,7 @@ fun EpisodesListView(episodes: List<Episode>, onItemClick: ((Int) -> Unit)? = nu
 }
 
 @Composable
-fun EpisodeCard(item: Episode, onItemClick: ((Int) -> Unit)? = null) {
+fun EpisodeCard(item: EpisodeItem, onItemClick: ((Int) -> Unit)? = null) {
     Card(
         modifier = Modifier.wrapContentHeight(unbounded = true),
         shape = RoundedCornerShape(Rounding.regular),
