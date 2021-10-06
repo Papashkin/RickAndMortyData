@@ -21,9 +21,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberImagePainter
-import com.antsfamily.rickandmortydata.data.local.CharacterMainItem
+import com.antsfamily.rickandmortydata.presentation.home.model.CharacterMainItem
 import com.antsfamily.rickandmortydata.extensions.mapDistinct
-import com.antsfamily.rickandmortydata.presentation.CharactersTabViewModel
+import com.antsfamily.rickandmortydata.presentation.home.CharactersTabViewModel
 import com.antsfamily.rickandmortydata.ui.ImageSize
 import com.antsfamily.rickandmortydata.ui.Padding
 import com.antsfamily.rickandmortydata.ui.Rounding

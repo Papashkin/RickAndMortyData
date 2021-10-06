@@ -1,15 +1,18 @@
-package com.antsfamily.rickandmortydata.presentation
+package com.antsfamily.rickandmortydata.presentation.home
 
 import android.util.Log
-import com.antsfamily.rickandmortydata.data.remote.Episode
-import com.antsfamily.rickandmortydata.data.remote.Episodes
-import com.antsfamily.rickandmortydata.domain.useCase.GetEpisodesUseCase
+import androidx.lifecycle.viewModelScope
+import com.antsfamily.rickandmortydata.data.DataRepository
+import com.antsfamily.rickandmortydata.domain.entity.Episode
+import com.antsfamily.rickandmortydata.domain.entity.Episodes
+import com.antsfamily.rickandmortydata.presentation.StatefulViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class EpisodesTabViewModel @Inject constructor(
-    private val getEpisodesUseCase: GetEpisodesUseCase
+    private val repository: DataRepository,
 ) : StatefulViewModel<EpisodesTabViewModel.State>(State()) {
 
     data class State(
@@ -25,12 +28,13 @@ class EpisodesTabViewModel @Inject constructor(
         }
     }
 
-    private fun getEpisodes() {
-        getEpisodesUseCase(
-            params = CHARACTER_FIRST_PAGE,
-            onResult = ::handleEpisodesSuccessResult,
-            onError = ::handleEpisodesErrorResult
-        )
+    private fun getEpisodes() = viewModelScope.launch {
+        try {
+            val data = repository.getEpisodes(EPISODES_FIRST_PAGE)
+            handleEpisodesSuccessResult(data)
+        } catch (e: Exception) {
+            handleEpisodesErrorResult(e)
+        }
     }
 
     private fun handleEpisodesSuccessResult(data: Episodes) {
@@ -55,7 +59,7 @@ class EpisodesTabViewModel @Inject constructor(
     }
 
     companion object {
-        private const val CHARACTER_FIRST_PAGE = 1
+        private const val EPISODES_FIRST_PAGE = 1
 
         private val TAG = EpisodesTabViewModel::class.java.canonicalName
     }

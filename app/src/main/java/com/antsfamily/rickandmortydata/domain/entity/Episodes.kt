@@ -1,4 +1,4 @@
-package com.antsfamily.rickandmortydata.data.remote
+package com.antsfamily.rickandmortydata.domain.entity
 
 import com.google.gson.annotations.SerializedName
 

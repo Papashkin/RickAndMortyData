@@ -1,4 +1,4 @@
-package com.antsfamily.rickandmortydata.data.local
+package com.antsfamily.rickandmortydata.presentation.home.model
 
 data class CharacterMainItem(
     val id: Int,

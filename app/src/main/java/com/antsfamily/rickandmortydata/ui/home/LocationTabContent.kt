@@ -19,9 +19,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.antsfamily.rickandmortydata.R
-import com.antsfamily.rickandmortydata.data.remote.Location
+import com.antsfamily.rickandmortydata.domain.entity.Location
 import com.antsfamily.rickandmortydata.extensions.mapDistinct
-import com.antsfamily.rickandmortydata.presentation.LocationsTabViewModel
+import com.antsfamily.rickandmortydata.presentation.home.LocationsTabViewModel
 import com.antsfamily.rickandmortydata.ui.ImageSize
 import com.antsfamily.rickandmortydata.ui.Padding
 import com.antsfamily.rickandmortydata.ui.Rounding

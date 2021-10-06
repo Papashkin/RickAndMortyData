@@ -12,7 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import com.antsfamily.rickandmortydata.R
-import com.antsfamily.rickandmortydata.data.local.TabItem
+import com.antsfamily.rickandmortydata.presentation.home.model.TabItem
 import com.antsfamily.rickandmortydata.ui.DarkColors
 import com.antsfamily.rickandmortydata.ui.LightColors
 import com.antsfamily.rickandmortydata.ui.Padding

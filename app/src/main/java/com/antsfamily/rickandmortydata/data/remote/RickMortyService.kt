@@ -1,9 +1,9 @@
-package com.antsfamily.rickandmortydata.remote
+package com.antsfamily.rickandmortydata.data.remote
 
-import com.antsfamily.rickandmortydata.data.remote.Character
-import com.antsfamily.rickandmortydata.data.remote.Characters
-import com.antsfamily.rickandmortydata.data.remote.Episodes
-import com.antsfamily.rickandmortydata.data.remote.Locations
+import com.antsfamily.rickandmortydata.domain.entity.Character
+import com.antsfamily.rickandmortydata.domain.entity.Characters
+import com.antsfamily.rickandmortydata.domain.entity.Episodes
+import com.antsfamily.rickandmortydata.domain.entity.Locations
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
