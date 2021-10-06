@@ -24,7 +24,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberImagePainter
 import coil.size.Scale
 import com.antsfamily.rickandmortydata.R
-import com.antsfamily.rickandmortydata.data.remote.Character
+import com.antsfamily.rickandmortydata.domain.entity.Character
 import com.antsfamily.rickandmortydata.extensions.mapDistinct
 import com.antsfamily.rickandmortydata.presentation.CharacterInfoViewModel
 import com.antsfamily.rickandmortydata.ui.ImageSize

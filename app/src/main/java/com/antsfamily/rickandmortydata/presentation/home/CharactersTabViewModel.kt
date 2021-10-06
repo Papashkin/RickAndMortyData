@@ -1,16 +1,19 @@
-package com.antsfamily.rickandmortydata.presentation
+package com.antsfamily.rickandmortydata.presentation.home
 
 import android.util.Log
-import com.antsfamily.rickandmortydata.data.local.CharacterMainItem
-import com.antsfamily.rickandmortydata.data.remote.Character
-import com.antsfamily.rickandmortydata.data.remote.Characters
-import com.antsfamily.rickandmortydata.domain.useCase.GetCharactersUseCase
+import androidx.lifecycle.viewModelScope
+import com.antsfamily.rickandmortydata.data.DataRepository
+import com.antsfamily.rickandmortydata.domain.entity.Character
+import com.antsfamily.rickandmortydata.domain.entity.Characters
+import com.antsfamily.rickandmortydata.presentation.StatefulViewModel
+import com.antsfamily.rickandmortydata.presentation.home.model.CharacterMainItem
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class CharactersTabViewModel @Inject constructor(
-    private val getCharactersUseCase: GetCharactersUseCase
+    private val repository: DataRepository,
 ) : StatefulViewModel<CharactersTabViewModel.State>(State()) {
 
     data class State(
@@ -26,12 +29,13 @@ class CharactersTabViewModel @Inject constructor(
         }
     }
 
-    private fun getCharacters() {
-        getCharactersUseCase(
-            params = CHARACTER_FIRST_PAGE,
-            onResult = ::handleCharactersSuccessResult,
-            onError = ::handleCharactersErrorResult
-        )
+    private fun getCharacters() = viewModelScope.launch {
+        try{
+            val data = repository.getCharacters(CHARACTERS_FIRST_PAGE)
+            handleCharactersSuccessResult(data)
+        } catch (e: Exception) {
+            handleCharactersErrorResult(e)
+        }
     }
 
     private fun handleCharactersSuccessResult(data: Characters) {
@@ -63,7 +67,7 @@ class CharactersTabViewModel @Inject constructor(
     }
 
     companion object {
-        private const val CHARACTER_FIRST_PAGE = 1
+        private const val CHARACTERS_FIRST_PAGE = 1
 
         private val TAG = CharactersTabViewModel::class.java.canonicalName
     }

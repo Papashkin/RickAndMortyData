@@ -1,6 +1,6 @@
 package com.antsfamily.rickandmortydata.presentation
 
-import com.antsfamily.rickandmortydata.data.remote.Character
+import com.antsfamily.rickandmortydata.domain.entity.Character
 import com.antsfamily.rickandmortydata.domain.useCase.GetCharacterInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject

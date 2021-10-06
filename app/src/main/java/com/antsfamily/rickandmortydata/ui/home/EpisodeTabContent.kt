@@ -19,9 +19,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.antsfamily.rickandmortydata.data.remote.Episode
+import com.antsfamily.rickandmortydata.domain.entity.Episode
 import com.antsfamily.rickandmortydata.extensions.mapDistinct
-import com.antsfamily.rickandmortydata.presentation.EpisodesTabViewModel
+import com.antsfamily.rickandmortydata.presentation.home.EpisodesTabViewModel
 import com.antsfamily.rickandmortydata.ui.ImageSize
 import com.antsfamily.rickandmortydata.ui.Padding
 import com.antsfamily.rickandmortydata.ui.Rounding

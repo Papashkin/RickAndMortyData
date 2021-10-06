@@ -1,6 +1,6 @@
 package com.antsfamily.rickandmortydata.di
 
-import com.antsfamily.rickandmortydata.remote.RickMortyService
+import com.antsfamily.rickandmortydata.data.remote.RickMortyService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

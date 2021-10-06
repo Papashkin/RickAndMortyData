@@ -1,15 +1,18 @@
-package com.antsfamily.rickandmortydata.presentation
+package com.antsfamily.rickandmortydata.presentation.home
 
 import android.util.Log
-import com.antsfamily.rickandmortydata.data.remote.Location
-import com.antsfamily.rickandmortydata.data.remote.Locations
-import com.antsfamily.rickandmortydata.domain.useCase.GetLocationsUseCase
+import androidx.lifecycle.viewModelScope
+import com.antsfamily.rickandmortydata.data.DataRepository
+import com.antsfamily.rickandmortydata.domain.entity.Location
+import com.antsfamily.rickandmortydata.domain.entity.Locations
+import com.antsfamily.rickandmortydata.presentation.StatefulViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class LocationsTabViewModel @Inject constructor(
-    private val getLocationsUseCase: GetLocationsUseCase
+    private val repository: DataRepository,
 ) : StatefulViewModel<LocationsTabViewModel.State>(State()) {
 
     data class State(
@@ -25,12 +28,13 @@ class LocationsTabViewModel @Inject constructor(
         }
     }
 
-    private fun getLocations() {
-        getLocationsUseCase(
-            params = CHARACTER_FIRST_PAGE,
-            onResult = ::handleLocationsSuccessResult,
-            onError = ::handleLocationsErrorResult
-        )
+    private fun getLocations() = viewModelScope.launch {
+        try {
+            val data = repository.getLocations(LOCATIONS_FIRST_PAGE)
+            handleLocationsSuccessResult(data)
+        } catch (e: Exception) {
+            handleLocationsErrorResult(e)
+        }
     }
 
     private fun handleLocationsSuccessResult(data: Locations) {
@@ -55,7 +59,7 @@ class LocationsTabViewModel @Inject constructor(
     }
 
     companion object {
-        private const val CHARACTER_FIRST_PAGE = 1
+        private const val LOCATIONS_FIRST_PAGE = 1
 
         private val TAG = LocationsTabViewModel::class.java.canonicalName
     }

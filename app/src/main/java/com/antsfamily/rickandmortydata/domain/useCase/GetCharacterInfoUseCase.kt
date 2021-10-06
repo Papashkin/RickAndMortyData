@@ -1,13 +1,13 @@
 package com.antsfamily.rickandmortydata.domain.useCase
 
-import com.antsfamily.rickandmortydata.data.remote.Character
+import com.antsfamily.rickandmortydata.data.DataRepository
 import com.antsfamily.rickandmortydata.domain.BaseUseCase
-import com.antsfamily.rickandmortydata.remote.RickMortyService
+import com.antsfamily.rickandmortydata.domain.entity.Character
 import javax.inject.Inject
 
 class GetCharacterInfoUseCase @Inject constructor(
-    private val service: RickMortyService
+    private val repository: DataRepository
 ) : BaseUseCase<Int, Character>() {
 
-    override suspend fun run(params: Int): Character = service.getCharacter(params)
+    override suspend fun run(params: Int): Character = repository.getCharacter(params)
 }
