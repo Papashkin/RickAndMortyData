@@ -1,6 +1,5 @@
 package com.antsfamily.rickandmortydata.presentation.home
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -46,7 +45,6 @@ class EpisodesTabViewModel @Inject constructor(
     }
 
     private fun handleEpisodesErrorResult(e: Exception) {
-        Log.e(TAG, e.message.orEmpty())
         _state.postValue(EpisodesState.ErrorState)
     }
 
@@ -58,7 +56,5 @@ class EpisodesTabViewModel @Inject constructor(
 
     companion object {
         private const val EPISODES_FIRST_PAGE = 1
-
-        private val TAG = EpisodesTabViewModel::class.java.canonicalName
     }
 }

@@ -1,6 +1,5 @@
 package com.antsfamily.rickandmortydata.presentation.home
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -46,7 +45,6 @@ class LocationsTabViewModel @Inject constructor(
     }
 
     private fun handleLocationsErrorResult(e: Exception) {
-        Log.e(TAG, e.message.orEmpty())
         _state.postValue(LocationsState.ErrorState)
     }
 
@@ -58,7 +56,5 @@ class LocationsTabViewModel @Inject constructor(
 
     companion object {
         private const val LOCATIONS_FIRST_PAGE = 1
-
-        private val TAG = LocationsTabViewModel::class.java.canonicalName
     }
 }
