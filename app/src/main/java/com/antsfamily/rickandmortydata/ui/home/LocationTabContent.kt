@@ -11,7 +11,6 @@ import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,13 +18,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.antsfamily.rickandmortydata.R
-import com.antsfamily.rickandmortydata.domain.entity.Location
-import com.antsfamily.rickandmortydata.extensions.mapDistinct
 import com.antsfamily.rickandmortydata.presentation.home.LocationsTabViewModel
+import com.antsfamily.rickandmortydata.presentation.home.model.LocationItem
+import com.antsfamily.rickandmortydata.presentation.home.state.LocationsState
 import com.antsfamily.rickandmortydata.ui.ImageSize
 import com.antsfamily.rickandmortydata.ui.Padding
 import com.antsfamily.rickandmortydata.ui.Rounding
-import com.antsfamily.rickandmortydata.ui.common.ErrorView
+import com.antsfamily.rickandmortydata.ui.common.ErrorWithRetryView
 import com.antsfamily.rickandmortydata.ui.common.LoadingView
 
 @Composable
@@ -33,24 +32,22 @@ fun LocationTabContent(
     viewModel: LocationsTabViewModel = hiltViewModel(),
     onItemClick: ((Int) -> Unit)? = null
 ) {
-    val locations: List<Location> by viewModel.state.mapDistinct { it.locations }
-        .observeAsState(emptyList())
-    val isLocationsVisible: Boolean by viewModel.state.mapDistinct { it.isLocationsVisible }
-        .observeAsState(false)
-    val isErrorVisible: Boolean by viewModel.state.mapDistinct { it.isLocationsErrorVisible }
-        .observeAsState(false)
-    val isLoading: Boolean by viewModel.state.mapDistinct { it.isLocationsLoading }
-        .observeAsState(true)
-
-    viewModel.showLocations()
-
-    if (isLoading) LoadingView()
-    if (isLocationsVisible) LocationsListView(locations, onItemClick)
-    if (isErrorVisible) ErrorView()
+    viewModel.state.observeAsState().value?.let { state ->
+        when (state) {
+            is LocationsState.DataState -> LocationsListView(
+                locations = (state as? LocationsState.DataState)?.locations.orEmpty(),
+                onItemClick = onItemClick
+            )
+            is LocationsState.ErrorState -> ErrorWithRetryView(
+                onRetryClick = { viewModel.onRetryClick() }
+            )
+            is LocationsState.LoadingState -> LoadingView()
+        }
+    }
 }
 
 @Composable
-fun LocationsListView(locations: List<Location>, onItemClick: ((Int) -> Unit)? = null) {
+fun LocationsListView(locations: List<LocationItem>, onItemClick: ((Int) -> Unit)? = null) {
     val scrollState = rememberLazyListState()
     LazyColumn(
         contentPadding = PaddingValues(Padding.medium),
@@ -64,9 +61,11 @@ fun LocationsListView(locations: List<Location>, onItemClick: ((Int) -> Unit)? =
 }
 
 @Composable
-fun LocationCard(item: Location, onItemClick: ((Int) -> Unit)? = null) {
+fun LocationCard(item: LocationItem, onItemClick: ((Int) -> Unit)? = null) {
     Card(
-        modifier = Modifier.wrapContentHeight(unbounded = true).fillMaxWidth(),
+        modifier = Modifier
+            .wrapContentHeight(unbounded = true)
+            .fillMaxWidth(),
         shape = RoundedCornerShape(Rounding.regular),
     ) {
         Column(
@@ -74,7 +73,10 @@ fun LocationCard(item: Location, onItemClick: ((Int) -> Unit)? = null) {
             verticalArrangement = Arrangement.Center
         ) {
             Row(
-                modifier = Modifier.padding(horizontal = Padding.medium, vertical = Padding.regular),
+                modifier = Modifier.padding(
+                    horizontal = Padding.medium,
+                    vertical = Padding.regular
+                ),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
@@ -91,7 +93,10 @@ fun LocationCard(item: Location, onItemClick: ((Int) -> Unit)? = null) {
                 )
             }
             Text(
-                modifier = Modifier.padding(vertical = Padding.tiny, horizontal = Padding.medium),
+                modifier = Modifier.padding(
+                    vertical = Padding.tiny,
+                    horizontal = Padding.medium
+                ),
                 text = item.type,
                 style = MaterialTheme.typography.body2
             )
@@ -116,3 +121,4 @@ fun LocationCard(item: Location, onItemClick: ((Int) -> Unit)? = null) {
         }
     }
 }
+

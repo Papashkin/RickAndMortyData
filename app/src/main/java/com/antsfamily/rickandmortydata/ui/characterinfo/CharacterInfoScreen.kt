@@ -3,16 +3,11 @@ package com.antsfamily.rickandmortydata.ui.characterinfo
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.Divider
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Accessibility
 import androidx.compose.material.icons.rounded.PinDrop
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,12 +19,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberImagePainter
 import coil.size.Scale
 import com.antsfamily.rickandmortydata.R
-import com.antsfamily.rickandmortydata.domain.entity.Character
-import com.antsfamily.rickandmortydata.extensions.mapDistinct
-import com.antsfamily.rickandmortydata.presentation.CharacterInfoViewModel
+import com.antsfamily.rickandmortydata.presentation.characterinfo.CharacterInfoViewModel
+import com.antsfamily.rickandmortydata.presentation.characterinfo.state.CharactersInfoState
+import com.antsfamily.rickandmortydata.presentation.home.model.CharacterItem
 import com.antsfamily.rickandmortydata.ui.ImageSize
 import com.antsfamily.rickandmortydata.ui.Padding
 import com.antsfamily.rickandmortydata.ui.Rounding
+import com.antsfamily.rickandmortydata.ui.common.ErrorView
 import com.antsfamily.rickandmortydata.ui.home.getThemeColors
 
 interface CharacterInfoScreen {
@@ -43,15 +39,21 @@ interface CharacterInfoScreen {
 
 @Composable
 fun CharacterInfoView(viewModel: CharacterInfoViewModel, id: Int) {
-    val character: Character? by viewModel.state.mapDistinct { it.character }.observeAsState()
-    viewModel.getCharacter(id)
-    character?.let {
-        SetCharacterView(it)
+    viewModel.state.observeAsState().value?.let { state ->
+        when (state) {
+            is CharactersInfoState.DataState -> SetCharacterView(state.character)
+            CharactersInfoState.ErrorState -> ErrorView()
+            CharactersInfoState.LoadingState -> {
+                // no-op
+            }
+        }
+
     }
+    viewModel.getCharacter(id)
 }
 
 @Composable
-fun SetCharacterView(character: Character) {
+fun SetCharacterView(character: CharacterItem) {
     ConstraintLayout {
         val (image, divider, card, deadIcon, unknownIcon) = createRefs()
         Image(
@@ -131,7 +133,7 @@ fun SetCharacterView(character: Character) {
                     )
                     Text(
                         modifier = Modifier.padding(start = Padding.regular),
-                        text = character.origin.name,
+                        text = character.origin,
                         style = MaterialTheme.typography.body1,
                     )
                 }
@@ -153,7 +155,7 @@ fun SetCharacterView(character: Character) {
 
         if (character.status == "unknown") {
             Icon(
-                painter = painterResource(id = R.drawable.ic_dead),
+                painter = painterResource(id = R.drawable.ic_unknown),
                 contentDescription = null,
                 tint = getThemeColors().onSurface,
                 modifier = Modifier

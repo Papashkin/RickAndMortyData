@@ -12,7 +12,6 @@ import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,13 +20,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberImagePainter
-import com.antsfamily.rickandmortydata.presentation.home.model.CharacterMainItem
-import com.antsfamily.rickandmortydata.extensions.mapDistinct
 import com.antsfamily.rickandmortydata.presentation.home.CharactersTabViewModel
+import com.antsfamily.rickandmortydata.presentation.home.model.CharacterItem
+import com.antsfamily.rickandmortydata.presentation.home.state.CharactersState
 import com.antsfamily.rickandmortydata.ui.ImageSize
 import com.antsfamily.rickandmortydata.ui.Padding
 import com.antsfamily.rickandmortydata.ui.Rounding
-import com.antsfamily.rickandmortydata.ui.common.ErrorView
+import com.antsfamily.rickandmortydata.ui.common.ErrorWithRetryView
 import com.antsfamily.rickandmortydata.ui.common.LoadingView
 
 @Composable
@@ -35,25 +34,22 @@ fun CharacterTabContent(
     viewModel: CharactersTabViewModel = hiltViewModel(),
     onItemClick: ((Int) -> Unit)? = null
 ) {
-
-    val characters: List<CharacterMainItem> by viewModel.state.mapDistinct { it.characters }
-        .observeAsState(emptyList())
-    val isCharactersVisible: Boolean by viewModel.state.mapDistinct { it.isCharactersVisible }
-        .observeAsState(false)
-    val isCharactersErrorVisible: Boolean by viewModel.state.mapDistinct { it.isCharactersErrorVisible }
-        .observeAsState(false)
-    val isLoading: Boolean by viewModel.state.mapDistinct { it.isCharactersLoading }
-        .observeAsState(true)
-
-    viewModel.showCharacters()
-
-    if (isLoading) LoadingView()
-    if (isCharactersVisible) CharactersListView(characters, onItemClick)
-    if (isCharactersErrorVisible) ErrorView()
+    viewModel.state.observeAsState().value?.let { state ->
+        when (state) {
+            is CharactersState.DataState -> CharactersListView(
+                characters = (state as? CharactersState.DataState)?.characters.orEmpty(),
+                onItemClick = onItemClick
+            )
+            CharactersState.ErrorState -> ErrorWithRetryView(
+                onRetryClick = { viewModel.onRetryClick() }
+            )
+            CharactersState.LoadingState -> LoadingView()
+        }
+    }
 }
 
 @Composable
-fun CharactersListView(characters: List<CharacterMainItem>, onItemClick: ((Int) -> Unit)? = null) {
+fun CharactersListView(characters: List<CharacterItem>, onItemClick: ((Int) -> Unit)? = null) {
     val scrollState = rememberLazyListState()
     LazyColumn(
         contentPadding = PaddingValues(Padding.medium),
@@ -67,7 +63,7 @@ fun CharactersListView(characters: List<CharacterMainItem>, onItemClick: ((Int) 
 }
 
 @Composable
-fun CharacterCard(item: CharacterMainItem, onItemClick: ((Int) -> Unit)? = null) {
+fun CharacterCard(item: CharacterItem, onItemClick: ((Int) -> Unit)? = null) {
     Card(
         modifier = Modifier.wrapContentHeight(unbounded = true),
         shape = RoundedCornerShape(Rounding.regular),
