@@ -28,3 +28,10 @@ object ImageSize {
     val medium = 64.dp
     val large = 128.dp
 }
+
+object Alpha {
+    val alpha20 = 0.2f
+    val alpha40 = 0.4f
+    val alpha60 = 0.6f
+    val alpha80 = 0.8f
+}

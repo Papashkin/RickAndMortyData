@@ -1,16 +1,21 @@
 package com.antsfamily.rickandmortydata.ui.characterinfo
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Accessibility
+import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.PinDrop
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -22,6 +27,7 @@ import com.antsfamily.rickandmortydata.R
 import com.antsfamily.rickandmortydata.presentation.characterinfo.CharacterInfoViewModel
 import com.antsfamily.rickandmortydata.presentation.characterinfo.state.CharactersInfoState
 import com.antsfamily.rickandmortydata.presentation.home.model.CharacterItem
+import com.antsfamily.rickandmortydata.ui.Alpha
 import com.antsfamily.rickandmortydata.ui.ImageSize
 import com.antsfamily.rickandmortydata.ui.Padding
 import com.antsfamily.rickandmortydata.ui.Rounding
@@ -31,17 +37,21 @@ import com.antsfamily.rickandmortydata.ui.home.getThemeColors
 interface CharacterInfoScreen {
     companion object {
         @Composable
-        fun Content(viewModel: CharacterInfoViewModel = hiltViewModel(), id: Int) {
-            CharacterInfoView(viewModel, id)
+        fun Content(
+            viewModel: CharacterInfoViewModel = hiltViewModel(),
+            id: Int,
+            onBackButtonClick: () -> Unit
+        ) {
+            CharacterInfoView(viewModel, id, onBackButtonClick)
         }
     }
 }
 
 @Composable
-fun CharacterInfoView(viewModel: CharacterInfoViewModel, id: Int) {
+fun CharacterInfoView(viewModel: CharacterInfoViewModel, id: Int, onBackButtonClick: () -> Unit) {
     viewModel.state.observeAsState().value?.let { state ->
         when (state) {
-            is CharactersInfoState.DataState -> SetCharacterView(state.character)
+            is CharactersInfoState.DataState -> SetCharacterView(state.character, onBackButtonClick)
             CharactersInfoState.ErrorState -> ErrorView()
             CharactersInfoState.LoadingState -> {
                 // no-op
@@ -53,12 +63,30 @@ fun CharacterInfoView(viewModel: CharacterInfoViewModel, id: Int) {
 }
 
 @Composable
-fun SetCharacterView(character: CharacterItem) {
+fun SetCharacterView(character: CharacterItem, onBackButtonClick: () -> Unit) {
     ConstraintLayout {
-        val (image, divider, card, deadIcon, unknownIcon) = createRefs()
+        val (backButton, image, divider, card, deadIcon, unknownIcon) = createRefs()
+
+        IconButton(
+            onClick = { onBackButtonClick.invoke() },
+            modifier = Modifier
+                .background(color = Color.White, shape = CircleShape)
+                .constrainAs(backButton) {
+                    top.linkTo(parent.top, Padding.small)
+                    start.linkTo(parent.start, Padding.small)
+                },
+        ) {
+            Icon(Icons.Rounded.Close,
+                contentDescription = null,
+                tint = Color.Black,
+                modifier = Modifier.background(Color.White)
+            )
+        }
+
         Image(
             modifier = Modifier
                 .fillMaxSize()
+                .alpha(Alpha.alpha60)
                 .constrainAs(image) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
@@ -72,15 +100,13 @@ fun SetCharacterView(character: CharacterItem) {
             alignment = Alignment.TopCenter
         )
 
-        Divider(
-            thickness = 0.dp,
-            modifier = Modifier
-                .padding(bottom = 80.dp)
-                .constrainAs(divider) {
-                    bottom.linkTo(image.bottom)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                },
+        Spacer(modifier = Modifier
+            .padding(bottom = 90.dp)
+            .constrainAs(divider) {
+                bottom.linkTo(image.bottom)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+            }
         )
 
         Card(

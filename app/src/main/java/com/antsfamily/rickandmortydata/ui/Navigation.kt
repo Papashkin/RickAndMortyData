@@ -34,7 +34,9 @@ fun Navigation() {
             Route.CharacterInfo,
             arguments = listOf(navArgument("id") { type = NavType.IntType })
         ) {
-            CharacterInfoScreen.Content(id = it.arguments?.getInt("id") ?: 0)
+            CharacterInfoScreen.Content(id = it.arguments?.getInt("id") ?: 0) {
+                navController.navigateUp()
+            }
         }
     }
 }
