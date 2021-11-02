@@ -25,18 +25,19 @@ fun Navigation() {
         }
         composable(Route.Home) {
             HomeScreen.Content(
-                onCharacterClick = { id -> navController.navigate("character/$id") },
                 onLocationClick = {},
-                onEpisodeClick = {}
+                onEpisodeClick = {},
+                navController = navController
             )
         }
         composable(
             Route.CharacterInfo,
             arguments = listOf(navArgument("id") { type = NavType.IntType })
         ) {
-            CharacterInfoScreen.Content(id = it.arguments?.getInt("id") ?: 0) {
-                navController.navigateUp()
-            }
+            CharacterInfoScreen.Content(
+                id = it.arguments?.getInt("id") ?: 0,
+                navController = navController
+            )
         }
     }
 }

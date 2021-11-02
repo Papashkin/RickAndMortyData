@@ -6,8 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.antsfamily.rickandmortydata.data.DataRepository
 import com.antsfamily.rickandmortydata.domain.entity.Character
+import com.antsfamily.rickandmortydata.domain.entity.Episode
+import com.antsfamily.rickandmortydata.presentation.characterinfo.model.CharacterInfoItem
 import com.antsfamily.rickandmortydata.presentation.characterinfo.state.CharactersInfoState
-import com.antsfamily.rickandmortydata.presentation.home.model.CharacterItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -24,13 +25,35 @@ class CharacterInfoViewModel @Inject constructor(
     fun getCharacter(id: Int) = viewModelScope.launch {
         try {
             val character = repository.getCharacter(id)
-            _state.postValue(CharactersInfoState.DataState(character.mapToItem()))
+            val idsOfEpisodes = character.episodes
+                .map { it.split(DELIMITER).last().toIntOrNull() ?: 0 }
+                .joinToString(SEPARATOR)
+            val episodes = repository.getMultipleEpisodes(idsOfEpisodes)
+            _state.postValue(CharactersInfoState.DataState(character.mapToItem(episodes), false))
         } catch (e: Exception) {
             _state.postValue(CharactersInfoState.ErrorState)
         }
     }
 
-    private fun Character.mapToItem(): CharacterItem = with(this) {
-        CharacterItem(id, name, status, species, origin.name, image)
+    private fun Character.mapToItem(episodes: List<Episode>): CharacterInfoItem = with(this) {
+        CharacterInfoItem(
+            id,
+            name,
+            status,
+            species,
+            type,
+            gender,
+            origin.name,
+            origin.url,
+            location.name,
+            location.url,
+            image,
+            episodes = episodes.map { it.episode + ". " + it.name }
+        )
+    }
+
+    companion object {
+        private const val SEPARATOR = ","
+        private const val DELIMITER = "/"
     }
 }

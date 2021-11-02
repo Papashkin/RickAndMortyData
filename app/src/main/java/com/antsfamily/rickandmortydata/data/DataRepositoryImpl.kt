@@ -1,10 +1,7 @@
 package com.antsfamily.rickandmortydata.data
 
 import com.antsfamily.rickandmortydata.data.remote.RemoteSource
-import com.antsfamily.rickandmortydata.domain.entity.Character
-import com.antsfamily.rickandmortydata.domain.entity.Characters
-import com.antsfamily.rickandmortydata.domain.entity.Episodes
-import com.antsfamily.rickandmortydata.domain.entity.Locations
+import com.antsfamily.rickandmortydata.domain.entity.*
 import javax.inject.Inject
 
 class DataRepositoryImpl @Inject constructor(
@@ -19,4 +16,6 @@ class DataRepositoryImpl @Inject constructor(
     override suspend fun getCharacter(characterId: Int): Character =
         source.getCharacter(characterId)
 
+    override suspend fun getMultipleEpisodes(episodes: String): List<Episode> =
+        source.getMultipleEpisodes(episodes)
 }

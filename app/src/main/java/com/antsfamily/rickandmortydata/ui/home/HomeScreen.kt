@@ -11,6 +11,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.navigation.NavController
 import com.antsfamily.rickandmortydata.R
 import com.antsfamily.rickandmortydata.presentation.home.model.TabItem
 import com.antsfamily.rickandmortydata.ui.DarkColors
@@ -28,11 +29,11 @@ interface HomeScreen {
         @ExperimentalPagerApi
         @Composable
         fun Content(
-            onCharacterClick: (Int) -> Unit,
             onLocationClick: (Int) -> Unit,
-            onEpisodeClick: (Int) -> Unit
+            onEpisodeClick: (Int) -> Unit,
+            navController: NavController,
         ) {
-            HomeView(onCharacterClick, onLocationClick, onEpisodeClick)
+            HomeView(onLocationClick, onEpisodeClick, navController)
         }
     }
 }
@@ -40,9 +41,9 @@ interface HomeScreen {
 @ExperimentalPagerApi
 @Composable
 fun HomeView(
-    onCharacterClick: (Int) -> Unit,
     onLocationClick: (Int) -> Unit,
-    onEpisodeClick: (Int) -> Unit
+    onEpisodeClick: (Int) -> Unit,
+    navController: NavController
 ) {
     val pages = TabItem.values().toList()
     val pagerState = rememberPagerState(pageCount = pages.size)
@@ -53,7 +54,7 @@ fun HomeView(
         SetTitleIcon()
         SpacerRegular()
         CharacterTab(pages, pagerState)
-        TabContent(pagerState, onCharacterClick, onLocationClick, onEpisodeClick)
+        TabContent(pagerState, onLocationClick, onEpisodeClick, navController)
     }
 }
 
@@ -100,12 +101,14 @@ fun CharacterTab(pages: List<TabItem>, pagerState: PagerState) {
 @Composable
 fun TabContent(
     pagerState: PagerState,
-    onCharacterClick: (Int) -> Unit,
     onLocationClick: (Int) -> Unit,
-    onEpisodeClick: (Int) -> Unit
+    onEpisodeClick: (Int) -> Unit,
+    navController: NavController
 ) {
     when (TabItem.values()[pagerState.currentPage]) {
-        TabItem.CHARACTERS -> CharacterTabContent(onItemClick = onCharacterClick)
+        TabItem.CHARACTERS -> CharacterTabContent(onItemClick = { id ->
+                navController.navigate("character/$id")
+        })
         TabItem.LOCATIONS -> LocationTabContent(onItemClick = onLocationClick)
         TabItem.EPISODES -> EpisodeTabContent(onItemClick = onEpisodeClick)
     }

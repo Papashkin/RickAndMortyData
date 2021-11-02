@@ -3,6 +3,9 @@ package com.antsfamily.rickandmortydata.ui.characterinfo
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -21,12 +24,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import coil.size.Scale
 import com.antsfamily.rickandmortydata.R
 import com.antsfamily.rickandmortydata.presentation.characterinfo.CharacterInfoViewModel
+import com.antsfamily.rickandmortydata.presentation.characterinfo.model.CharacterInfoItem
 import com.antsfamily.rickandmortydata.presentation.characterinfo.state.CharactersInfoState
-import com.antsfamily.rickandmortydata.presentation.home.model.CharacterItem
 import com.antsfamily.rickandmortydata.ui.Alpha
 import com.antsfamily.rickandmortydata.ui.ImageSize
 import com.antsfamily.rickandmortydata.ui.Padding
@@ -40,35 +44,40 @@ interface CharacterInfoScreen {
         fun Content(
             viewModel: CharacterInfoViewModel = hiltViewModel(),
             id: Int,
-            onBackButtonClick: () -> Unit
+            navController: NavController,
         ) {
-            CharacterInfoView(viewModel, id, onBackButtonClick)
+            CharacterInfoView(viewModel, navController)
+            viewModel.getCharacter(id)
         }
     }
 }
 
 @Composable
-fun CharacterInfoView(viewModel: CharacterInfoViewModel, id: Int, onBackButtonClick: () -> Unit) {
+fun CharacterInfoView(
+    viewModel: CharacterInfoViewModel,
+    navController: NavController,
+) {
     viewModel.state.observeAsState().value?.let { state ->
         when (state) {
-            is CharactersInfoState.DataState -> SetCharacterView(state.character, onBackButtonClick)
+            is CharactersInfoState.DataState -> ShowCharacterView(state.character, navController)
             CharactersInfoState.ErrorState -> ErrorView()
             CharactersInfoState.LoadingState -> {
                 // no-op
             }
         }
-
     }
-    viewModel.getCharacter(id)
 }
 
 @Composable
-fun SetCharacterView(character: CharacterItem, onBackButtonClick: () -> Unit) {
+fun ShowCharacterView(
+    character: CharacterInfoItem,
+    navController: NavController,
+) {
     ConstraintLayout {
         val (backButton, image, divider, card, deadIcon, unknownIcon) = createRefs()
 
         IconButton(
-            onClick = { onBackButtonClick.invoke() },
+            onClick = { navController.navigateUp() },
             modifier = Modifier
                 .background(color = Color.White, shape = CircleShape)
                 .constrainAs(backButton) {
@@ -76,7 +85,8 @@ fun SetCharacterView(character: CharacterItem, onBackButtonClick: () -> Unit) {
                     start.linkTo(parent.start, Padding.small)
                 },
         ) {
-            Icon(Icons.Rounded.Close,
+            Icon(
+                Icons.Rounded.Close,
                 contentDescription = null,
                 tint = Color.Black,
                 modifier = Modifier.background(Color.White)
@@ -159,9 +169,22 @@ fun SetCharacterView(character: CharacterItem, onBackButtonClick: () -> Unit) {
                     )
                     Text(
                         modifier = Modifier.padding(start = Padding.regular),
-                        text = character.origin,
+                        text = character.originName,
                         style = MaterialTheme.typography.body1,
                     )
+                }
+                LazyColumn(
+                    state = rememberLazyListState(),
+                    modifier = Modifier.padding(top = Padding.medium)
+                ) {
+                    itemsIndexed(character.episodes) { _, data ->
+                        Card(
+                            modifier = Modifier
+                                .background(Color.Cyan, RoundedCornerShape(Rounding.medium))
+                        ) {
+                            Text(text = data, modifier = Modifier.padding(Padding.small))
+                        }
+                    }
                 }
             }
         }
