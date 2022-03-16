@@ -1,12 +1,12 @@
 package com.antsfamily.rickandmortydata
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.antsfamily.rickandmortydata.data.DataRepository
-import com.antsfamily.rickandmortydata.domain.entity.Episode
-import com.antsfamily.rickandmortydata.domain.entity.Episodes
-import com.antsfamily.rickandmortydata.domain.entity.Info
-import com.antsfamily.rickandmortydata.presentation.home.EpisodesTabViewModel
-import com.antsfamily.rickandmortydata.presentation.home.state.EpisodesState
+import com.antsfamily.domain.repositories.DataRepository
+import com.antsfamily.domain.entity.Episode
+import com.antsfamily.domain.entity.Episodes
+import com.antsfamily.domain.entity.Info
+import com.antsfamily.rickandmortydata.ui.episodes.EpisodesTabViewModel
+import com.antsfamily.rickandmortydata.ui.episodes.state.EpisodesState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule

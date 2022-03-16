@@ -18,9 +18,8 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.antsfamily.rickandmortydata.R
-import com.antsfamily.rickandmortydata.presentation.characterinfo.CharacterInfoViewModel
-import com.antsfamily.rickandmortydata.presentation.characterinfo.state.CharactersInfoState
-import com.antsfamily.rickandmortydata.presentation.home.model.CharacterItem
+import com.antsfamily.rickandmortydata.ui.characterinfo.state.CharactersInfoState
+import com.antsfamily.rickandmortydata.ui.characters.CharacterItem
 import com.antsfamily.rickandmortydata.ui.ImageSize
 import com.antsfamily.rickandmortydata.ui.Padding
 import com.antsfamily.rickandmortydata.ui.Rounding

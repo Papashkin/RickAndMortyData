@@ -12,11 +12,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import com.antsfamily.rickandmortydata.R
-import com.antsfamily.rickandmortydata.presentation.home.model.TabItem
 import com.antsfamily.rickandmortydata.ui.DarkColors
 import com.antsfamily.rickandmortydata.ui.LightColors
+import com.antsfamily.rickandmortydata.ui.Locations.LocationTabContent
 import com.antsfamily.rickandmortydata.ui.Padding
+import com.antsfamily.rickandmortydata.ui.characters.CharacterTabContent
 import com.antsfamily.rickandmortydata.ui.common.SpacerRegular
+import com.antsfamily.rickandmortydata.ui.episodes.EpisodeTabContent
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.pagerTabIndicatorOffset

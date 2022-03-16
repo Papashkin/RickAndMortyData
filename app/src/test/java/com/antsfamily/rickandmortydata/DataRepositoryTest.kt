@@ -1,9 +1,9 @@
 package com.antsfamily.rickandmortydata
 
-import com.antsfamily.rickandmortydata.data.DataRepository
-import com.antsfamily.rickandmortydata.data.DataRepositoryImpl
-import com.antsfamily.rickandmortydata.data.remote.RemoteSource
-import com.antsfamily.rickandmortydata.domain.entity.*
+import com.antsfamily.domain.entity.*
+import com.antsfamily.domain.repositories.DataRepository
+import com.antsfamily.domain.repositories.DataRepositoryImpl
+import com.antsfamily.domain.remote.RemoteSource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
