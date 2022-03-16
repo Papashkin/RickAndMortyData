@@ -1,6 +1,5 @@
 package com.antsfamily.rickandmortydata.ui.home
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,7 +18,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.rememberImagePainter
+import coil.compose.AsyncImage
 import com.antsfamily.rickandmortydata.presentation.home.CharactersTabViewModel
 import com.antsfamily.rickandmortydata.presentation.home.model.CharacterItem
 import com.antsfamily.rickandmortydata.presentation.home.state.CharactersState
@@ -72,10 +71,10 @@ fun CharacterCard(item: CharacterItem, onItemClick: ((Int) -> Unit)? = null) {
             modifier = Modifier.clickable { onItemClick?.invoke(item.id) },
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
-                painter = rememberImagePainter(data = item.image),
-                contentScale = ContentScale.Crop,
+            AsyncImage(
+                model = item.image,
                 contentDescription = null,
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(ImageSize.large)
                     .padding(Padding.regular)

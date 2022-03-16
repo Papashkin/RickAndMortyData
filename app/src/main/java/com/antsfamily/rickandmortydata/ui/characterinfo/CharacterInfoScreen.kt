@@ -1,6 +1,5 @@
 package com.antsfamily.rickandmortydata.ui.characterinfo
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -11,13 +10,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.rememberImagePainter
-import coil.size.Scale
+import coil.compose.AsyncImage
 import com.antsfamily.rickandmortydata.R
 import com.antsfamily.rickandmortydata.presentation.characterinfo.CharacterInfoViewModel
 import com.antsfamily.rickandmortydata.presentation.characterinfo.state.CharactersInfoState
@@ -47,7 +46,6 @@ fun CharacterInfoView(viewModel: CharacterInfoViewModel, id: Int) {
                 // no-op
             }
         }
-
     }
     viewModel.getCharacter(id)
 }
@@ -56,20 +54,18 @@ fun CharacterInfoView(viewModel: CharacterInfoViewModel, id: Int) {
 fun SetCharacterView(character: CharacterItem) {
     ConstraintLayout {
         val (image, divider, card, deadIcon, unknownIcon) = createRefs()
-        Image(
+        AsyncImage(
+            model = character.image,
+            contentDescription = null,
+            contentScale = ContentScale.Fit,
+            alignment = Alignment.TopCenter,
             modifier = Modifier
                 .fillMaxSize()
                 .constrainAs(image) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
-                },
-            painter = rememberImagePainter(character.image) {
-                scale(Scale.FIT)
-                crossfade(200)
-            },
-            contentDescription = null,
-            alignment = Alignment.TopCenter
+                }
         )
 
         Divider(

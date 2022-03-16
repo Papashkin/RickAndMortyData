@@ -36,7 +36,7 @@ class EpisodesTabViewModel @Inject constructor(
             val data = repository.getEpisodes(EPISODES_FIRST_PAGE)
             handleEpisodesSuccessResult(data)
         } catch (e: Exception) {
-            handleEpisodesErrorResult(e)
+            handleEpisodesErrorResult()
         }
     }
 
@@ -44,7 +44,7 @@ class EpisodesTabViewModel @Inject constructor(
         _state.postValue(EpisodesState.DataState(data.episodes.mapToItems()))
     }
 
-    private fun handleEpisodesErrorResult(e: Exception) {
+    private fun handleEpisodesErrorResult() {
         _state.postValue(EpisodesState.ErrorState)
     }
 

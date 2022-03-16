@@ -36,7 +36,7 @@ class LocationsTabViewModel @Inject constructor(
             val data = repository.getLocations(LOCATIONS_FIRST_PAGE)
             handleLocationsSuccessResult(data)
         } catch (e: Exception) {
-            handleLocationsErrorResult(e)
+            handleLocationsErrorResult()
         }
     }
 
@@ -44,7 +44,7 @@ class LocationsTabViewModel @Inject constructor(
         _state.postValue(LocationsState.DataState(data.locations.mapToItems()))
     }
 
-    private fun handleLocationsErrorResult(e: Exception) {
+    private fun handleLocationsErrorResult() {
         _state.postValue(LocationsState.ErrorState)
     }
 

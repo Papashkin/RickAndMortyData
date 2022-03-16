@@ -36,7 +36,7 @@ class CharactersTabViewModel @Inject constructor(
             val data = repository.getCharacters(CHARACTERS_FIRST_PAGE)
             handleCharactersSuccessResult(data)
         } catch (e: Exception) {
-            handleCharactersErrorResult(e)
+            handleCharactersErrorResult()
         }
     }
 
@@ -44,7 +44,7 @@ class CharactersTabViewModel @Inject constructor(
         _state.postValue(CharactersState.DataState(data.characters.mapToItems()))
     }
 
-    private fun handleCharactersErrorResult(e: Exception) {
+    private fun handleCharactersErrorResult() {
         _state.postValue(CharactersState.ErrorState)
     }
 
