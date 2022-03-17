@@ -1,8 +1,7 @@
-name: Testing
+name: Test and build
 
 on:
   pull_request:
-    branches: [ develop ]
     types: [opened, synchronize, reopened]
 
 jobs:
@@ -18,3 +17,5 @@ jobs:
           java-version: '11'
       - name: Run tests
         run: ./gradlew test
+      - name: Build with Gradle
+        run: ./gradlew build --stacktrace
